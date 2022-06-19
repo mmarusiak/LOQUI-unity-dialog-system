@@ -1,56 +1,56 @@
 using System.Collections.Generic;
 using UnityEditor;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
-
-
-public class DialogUINode
-{
-    public DialogNode Node;
-    public Vector2 Position;
-    public Rect Graphic;
-
-    public DialogUINode(DialogNode node, Vector2 position, Rect graphic)
-    {
-        Node = node;
-        Position = position;
-        Graphic = graphic;
-    }
-}
 public class DialogWindow : EditorWindow
 {
-    public Color32 responseColor = new Color32(172, 57, 49, 255);
-    public Color32 passiveColor = new Color32(83, 125, 141, 255);
-    
     Rect windowRect = new Rect (100 + 100, 100, 100, 100);
     Rect windowRect2 = new Rect (100, 100, 100, 100);
 
-    public List<List<DialogUINode>> Dialogs = new List<List<DialogUINode>>();
+    private bool _addingNode = false;
+    private Vector2 _scrollPosition = Vector2.zero;
+    private int _idOfLastTouhedNode;
 
-    public bool creatorState = false;
+    public List<DialogNode> NodeList = new List<DialogNode>();
+
 
     [MenuItem("Window/Dialog system window")]
     public static void Init()
     {
-        DialogWindow window = (DialogWindow) GetWindow(typeof(DialogWindow));
+        DialogWindow window = GetWindow<DialogWindow>("Dialog editor");
         window.Show();
-
-
+        
         GUIContent content = new GUIContent("Dialog editor");
         window.titleContent = content;
     }
 
     private void OnGUI()
     {
-        if (GUI.Button(new Rect(Vector2.zero, new Vector2(150, 50)),
-            "Create new dialog node"))
+        if (_addingNode)
         {
-            creatorState = !creatorState;
+            string _title = "", _text = "";
+            GUILayout.BeginHorizontal();
+            _title = EditorGUILayout.TextField("Node title", _title);
+            _text = EditorGUILayout.TextField("Node text", _text);
+            GUILayout.EndHorizontal();
+        }
+        
+        GUILayout.BeginHorizontal();
+        if (GUILayout.Button("Add node"))
+        {
+            _addingNode = !_addingNode;
+            NodeList.Add(new DialogNode("test", "test123,", DialogNode.NodeType.Passive));
         }
 
-        if (creatorState)
+        if (GUILayout.Button("Remove node"))
         {
-            EditorGUILayout.TextField("Enter node name", "");
+            NodeList.RemoveAt(_idOfLastTouhedNode);
         }
+        GUILayout.EndHorizontal();
+
+        _scrollPosition = GUI.BeginScrollView(
+            new Rect(0, 0, position.width-1, position.height), 
+                _scrollPosition, new Rect(0, 0, position.width, position.height));
         
         Handles.BeginGUI();
         Handles.DrawBezier(windowRect.center, 
@@ -62,14 +62,34 @@ public class DialogWindow : EditorWindow
         Handles.EndGUI();
 
         BeginWindows();
-        windowRect = GUI.Window (0, windowRect, WindowFunction, "Box1");
-        windowRect2 = GUI.Window (1, windowRect2, WindowFunction, "Box2");
-
+        for (int i = 0; i < NodeList.Count; i++)
+        {
+            NodeList[i].NodeRect = 
+                KeepInWindow(GUI.Window(i, NodeList[i].NodeRect,
+                    WindowFunction, NodeList[i].Title));
+        }
         EndWindows();
+        GUI.EndScrollView();
     }
     
-    void WindowFunction (int windowID) 
+    void WindowFunction (int windowID)
     {
         GUI.DragWindow();
     }
+
+    Rect KeepInWindow(Rect rect)
+    {
+        if (rect.position.x > position.width)
+            rect.position = new Vector2(position.width, rect.position.y);
+        if (rect.position.y > position.height)
+            rect.position = new Vector2(rect.position.x, position.height);
+
+        if (rect.position.x < 0)
+            rect.position = new Vector2(0, rect.position.y);
+        if (rect.position.y < 0)
+            rect.position = new Vector2(rect.position.x, 0);
+            
+        return rect;
+    }
+    
 }

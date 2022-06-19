@@ -1,23 +1,25 @@
 using System.Collections.Generic;
+using UnityEngine;
 
 public class DialogNode
 {
-    public enum nodeType
+    public enum NodeType
     {
-        PassiveNode, // AI dialog
-        ResponseNode // Player dialog - choice
+        Passive,
+        MultipleChoice,
     }
     
-    
-    public List<DialogNode> NextNode = new List<DialogNode>();
-    public DialogNode PreviousChosenNode;
-    public nodeType NodeType;
     public string Title, Text;
+    public Rect NodeRect = new Rect (100, 100, 100, 100);
+    public NodeType DialogNodeType;
 
-    public DialogNode(nodeType _nodeType, string title, string text)
+    public DialogNode Root;
+    public List<DialogNode> NextNodes;
+
+    public DialogNode(string _title, string _text, NodeType _dialogNodeType)
     {
-        NodeType = _nodeType;
-        Title = title;
-        Text = text;
+        Title = _title;
+        Text = _text;
+        DialogNodeType = _dialogNodeType;
     }
 }
