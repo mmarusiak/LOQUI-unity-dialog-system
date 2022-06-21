@@ -15,9 +15,8 @@ public class DialogNode
     public int WindowID;
     public Rect NodeRect = new Rect (100, 100, 100, 100);
     public NodeType DialogNodeType;
-
-    public DialogNode Root;
-    public List<DialogNode> NextNodes;
+    
+    public List<DialogNode> NextNodes = new List<DialogNode>();
 
     public DialogNode(string _title, string _text, NodeType _dialogNodeType)
     {
