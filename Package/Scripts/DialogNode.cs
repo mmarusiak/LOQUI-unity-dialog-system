@@ -1,15 +1,18 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
+[Serializable]
 public class DialogNode
 {
     public enum NodeType
     {
-        Passive,
-        MultipleChoice,
+        AINode,
+        PlayerNode,
     }
     
     public string Title, Text;
+    public int WindowID;
     public Rect NodeRect = new Rect (100, 100, 100, 100);
     public NodeType DialogNodeType;
 
