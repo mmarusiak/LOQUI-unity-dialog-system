@@ -8,12 +8,14 @@ using Object = UnityEngine.Object;
 public class DialogWindow : EditorWindow
 {
     private bool _creatingNode = false, _actorCreated = false, _inspectorShown = true, 
-        _linkingMode = false, _destroyLinksMode = false;
-    string _newNodeTitle = "", _newNodeText = "";
+        _linkingMode = false, _destroyLinksMode = false, _customDropDownShown;
+    private string _newNodeTitle = "", _newNodeText = "";
     private int _selectedNodeType = -1, _selectedActor = -1, _lastTouchedWindow = -1;
     private float _inspectorWidth = 140;
     private GUIStyle _centeredStyle = null;
-
+    
+    private DialogController _dialogController;
+    private DialogSystemInfo _dialogSystemInfo;
     public GameObject dialogActor;
 
     private Color32[] _colorPallete = new[]
@@ -23,7 +25,7 @@ public class DialogWindow : EditorWindow
         new Color32(233, 196, 106, 255)
     };
 
-    [MenuItem("Window/Dialog system window")]
+    [MenuItem("Window/Dialog system window")] 
     public static void Init()
     {
         DialogWindow window = GetWindow<DialogWindow>("Dialog editor");
@@ -32,10 +34,23 @@ public class DialogWindow : EditorWindow
 
     private void OnGUI()
     {
+        if (_dialogSystemInfo == null)
+        {
+            try
+            {
+                _dialogSystemInfo = GameObject.FindWithTag("GameController").GetComponent<DialogSystemInfo>();
+            }
+            catch
+            {
+                Debug.LogWarning("Please add dialog system info script to game object with tag GameController");
+            }
+
+        }
+        
         if (_centeredStyle == null)
         {
-            _centeredStyle = GUI.skin.GetStyle("Label");
-            _centeredStyle.alignment = TextAnchor.UpperCenter;
+            _centeredStyle = GUI.skin.label;
+            _centeredStyle.alignment = TextAnchor.MiddleCenter;
         }
         
         _inspectorWidth = position.width / 4;
@@ -54,6 +69,11 @@ public class DialogWindow : EditorWindow
         {
             DrawActorPanel();
         }
+
+        if (_customDropDownShown)
+        {
+            ShowDropDown(_lastTouchedWindow);
+        }
     }
 
     void DrawStaticGroup()
@@ -61,12 +81,15 @@ public class DialogWindow : EditorWindow
         // Game object popup
         var allGameObjects = Object.FindObjectsOfType<GameObject>();
         _selectedActor = EditorGUI.Popup(new Rect(0, 0, 140, 20), _selectedActor,allGameObjects.Select(
-            (_gameobject) => _gameobject.name).ToArray());
+            (gameobject) => gameobject.name).ToArray());
 
         if (_selectedActor >= 0 && _selectedActor < allGameObjects.Length)
         {
-            dialogActor = allGameObjects[_selectedActor];
-            _actorCreated = dialogActor.GetComponent<DialogController>() != null;
+            if (dialogActor != allGameObjects[_selectedActor])
+            {
+                dialogActor = allGameObjects[_selectedActor];
+                AssignDialogController();
+            }
         }
         
         // Show inspector button
@@ -136,40 +159,51 @@ public class DialogWindow : EditorWindow
             GUI.Label(new Rect(0, 160, position.width, 40), 
                 "Select node type", EditorStyles.boldLabel);
             _selectedNodeType = EditorGUI.Popup(new Rect(3*position.width/8, 170, position.width/4, 20),
-                _selectedNodeType, new string[]
+                _selectedNodeType, new[]
                 {
                     DialogNode.NodeType.AINode.ToString(),
                     DialogNode.NodeType.PlayerNode.ToString()
                 });
         }
         
-        Handles.BeginGUI();
-        List<DialogNode[]> linkednodes = LinkedNodes();
-        foreach (var pair in linkednodes)
-        {
-            Handles.DrawBezier(pair[0].NodeRect.center, pair[1].NodeRect.center,
-                new Vector2(pair[0].NodeRect.xMax + 50f, pair[0].NodeRect.center.y),
-                new Vector2(pair[1].NodeRect.xMax + 50f, pair[1].NodeRect.center.y),
-                _colorPallete[2], null, 5f);
-        }
-        Handles.EndGUI();
-        
         BeginWindows();
         for (int i = 0; i < dialogActor.GetComponent<DialogController>().DialogNodes.Count; i++)
         {
             dialogActor.GetComponent<DialogController>().DialogNodes[i].WindowID = i;
             Color oldColor = GUI.color;
-            GUI.color = _colorPallete[(int) dialogActor.GetComponent<DialogController>().DialogNodes[i].DialogNodeType];
-            dialogActor.GetComponent<DialogController>().DialogNodes[i].NodeRect = 
-                GUI.Window(i, dialogActor.GetComponent<DialogController>().DialogNodes[i].NodeRect,
-                    WindowFunction, dialogActor.GetComponent<DialogController>().DialogNodes[i].Title);
+            GUI.color = _colorPallete[(int) _dialogController.DialogNodes[i].DialogNodeType];
+            _dialogController.DialogNodes[i].NodeRect = 
+                GUI.Window(i, _dialogController.DialogNodes[i].NodeRect,
+                    WindowFunction, "");
             GUI.color = oldColor;
         }
         EndWindows();
+        
+        Handles.BeginGUI();
+        List<DialogNode[]> linkednodes = LinkedNodes();
+        foreach (var pair in linkednodes)
+        { 
+            Handles.DrawBezier(
+                new Vector2(pair[0].NodeRect.x, pair[0].NodeRect.center.y), 
+                new Vector2(pair[1].NodeRect.x + pair[1].NodeRect.width, pair[1].NodeRect.center.y),
+                 new Vector2(pair[0].NodeRect.xMax + 50f, pair[0].NodeRect.center.y),
+                 new Vector2(pair[1].NodeRect.xMax + 50f, pair[1].NodeRect.center.y),
+                 _colorPallete[2], null, 6f);
+            
+            GUI.DrawTexture(
+                new Rect
+                (
+                    pair[1].NodeRect.x + pair[1].NodeRect.width - _dialogSystemInfo.ArrowSize, 
+                    pair[1].NodeRect.center.y - _dialogSystemInfo.ArrowSize / 2, 
+                    _dialogSystemInfo.ArrowSize,
+                    _dialogSystemInfo.ArrowSize), _dialogSystemInfo.ArrowTexture, ScaleMode.ScaleToFit);
+        }
+        Handles.EndGUI();
     }
 
     void DrawActorPanel()
     { 
+        if(_centeredStyle != null){}
         GUI.Label(new Rect(position.width/4, 40, position.width/2, 40), 
             "Selected Game Object is not Dialog Actor!", _centeredStyle);
         if(GUI.Button(new Rect(position.width / 4, 80, position.width / 2, 40),
@@ -182,10 +216,6 @@ public class DialogWindow : EditorWindow
 
     void DrawInspector()
     {
-        int yPos = 80;
-        if (_creatingNode)
-            yPos = 160;
-        
         // Background for inspector
         Color oldColor = GUI.color;
         Color32 inspectorColor = new Color32(92, 92, 92, 255);
@@ -242,6 +272,11 @@ public class DialogWindow : EditorWindow
     
     void WindowFunction (int windowID)
     {
+        // TO CENTER - centered style doesnt work
+        GUI.Label(
+            new Rect(0,-30, 100, 100),
+            _dialogController.FindNodeByWindowID(windowID).Title, _centeredStyle);
+        
         Rect windowRect = dialogActor.GetComponent<DialogController>().
             FindNodeByWindowID(windowID).NodeRect;
 
@@ -257,59 +292,98 @@ public class DialogWindow : EditorWindow
         if(e.type == EventType.MouseDown && e.button == 0 && 
            relativeRect.Contains(GUIUtility.GUIToScreenPoint(e.mousePosition)))
         {
-            Debug.Log("Touch");
-            
-            DialogNode[] nodes = new []
+            _customDropDownShown = false;
+            if (windowID != _lastTouchedWindow)
             {
-                new DialogNode("","",DialogNode.NodeType.PlayerNode),
-                new DialogNode("","",DialogNode.NodeType.PlayerNode),
-            };
-            nodes[0].NodeRect = Rect.zero;
-            nodes[0].WindowID = windowID;
-            nodes[1].NodeRect = Rect.zero;
-            nodes[1].WindowID = _lastTouchedWindow;
 
-            if (_lastTouchedWindow == windowID)
-            {
-                    
+                if (_linkingMode)
+                {
+                    _linkingMode = false;
+                    if (!_dialogController.FindNodeByWindowID(windowID).LinkedIds.Contains(_lastTouchedWindow)
+                        && !_dialogController.FindNodeByWindowID(_lastTouchedWindow).LinkedIds.Contains(windowID)
+                        && _dialogController.FindNodeByWindowID(windowID).DialogNodeType 
+                        != _dialogController.FindNodeByWindowID(_lastTouchedWindow).DialogNodeType)
+                    {
+                        _dialogController.FindNodeByWindowID(_lastTouchedWindow).LinkedIds.Add(windowID);
+                    }
+                }
+
+                if (_destroyLinksMode)
+                {
+                    _destroyLinksMode = false;
+                    if (_dialogController.FindNodeByWindowID(_lastTouchedWindow).LinkedIds.Contains(windowID))
+                    {
+                        _dialogController.FindNodeByWindowID(_lastTouchedWindow).LinkedIds.Remove(windowID);
+                    }
+                }
             }
             
             _lastTouchedWindow = windowID;
         }
-        GUI.DragWindow();
+        if (e.type == EventType.MouseDown && e.button == 1 &&
+            relativeRect.Contains(GUIUtility.GUIToScreenPoint(e.mousePosition)))
+        {
+            _customDropDownShown = true;
+            _lastTouchedWindow = windowID;
+        }
+        
+        if(!_customDropDownShown || windowID != _lastTouchedWindow)
+            GUI.DragWindow();
+    }
+
+    void ShowDropDown(int windowID)
+    {
+        Rect windowRect = _dialogController.FindNodeByWindowID(windowID).NodeRect;
+        Rect firstButtonPos = new Rect(windowRect.x + windowRect.width, windowRect.y, 200, 50);
+
+        if (GUI.Button(firstButtonPos, "Make new link"))
+        {
+            _linkingMode = true;
+            _destroyLinksMode = false;
+            _customDropDownShown = false;
+        }
+        if (GUI.Button(new Rect(firstButtonPos.x, firstButtonPos.y + firstButtonPos.height,
+                firstButtonPos.width, firstButtonPos.height), "Destroy old link"))
+        {
+            _destroyLinksMode = true;
+            _linkingMode = false;
+            _customDropDownShown = false;
+        }
+
+        if (GUI.Button(new Rect(firstButtonPos.x, firstButtonPos.y + 2 * firstButtonPos.height,
+            firstButtonPos.width, firstButtonPos.height), "Back"))
+        {
+            _customDropDownShown = false;
+        }
     }
 
     private List<DialogNode[]> LinkedNodes()
     {
         List<DialogNode[]> result = new List<DialogNode[]>();
-        if (dialogActor.GetComponent<DialogController>().DialogNodes.Count > 0)
+
+        foreach (var node in _dialogController.DialogNodes)
         {
-            foreach (var node in dialogActor.GetComponent<DialogController>().DialogNodes)
+            foreach (var nextID in node.LinkedIds)
             {
-                if (node.NextNodes.Count > 0)
-                {
-                    foreach (var nextnode in node.NextNodes)
-                    {
-                        if (!result.Contains(new[]
-                        {
-                            dialogActor.GetComponent<DialogController>().FindNodeByWindowID(nextnode.WindowID),
-                            node   
-                        }) && !result.Contains(new[]
-                        {
-                            node,
-                            dialogActor.GetComponent<DialogController>().FindNodeByWindowID(nextnode.WindowID)
-                        }))
-                        {
-                            result.Add(new[] {node, dialogActor.GetComponent<DialogController>().FindNodeByWindowID(nextnode.WindowID)});
-                        }
-                    }
-                }
+                result.Add(new []{node, _dialogController.FindNodeByWindowID(nextID)});
             }
         }
-
+        
+        
         return result;
     }
 
+    void AssignDialogController()
+    {
+        _dialogController = dialogActor.GetComponent<DialogController>();
+        _actorCreated = true;
+        _creatingNode = false;
+        
+        if (_dialogController == null)
+        {
+            _actorCreated = false;
+        }
+    }
     private Texture2D MakeTex( int width, int height, Color col )
     {
         Color[] pix = new Color[width * height];
