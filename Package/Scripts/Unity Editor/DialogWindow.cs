@@ -113,28 +113,20 @@ public class DialogWindow : EditorWindow
     {
         // Create new node
         if (GUI.Button(new Rect(0, 20, 
-            position.width / 2 - _inspectorWidth * Convert.ToInt32(_inspectorShown)/2, 60), "ADD NODE"))
+            position.width - _inspectorWidth * Convert.ToInt32(_inspectorShown), 60), "ADD NODE"))
         {
             _creatingNode = !_creatingNode;
 
             if (_selectedNodeType >= 0 && _newNodeTitle != "" && _newNodeText != "")
             {
-                dialogActor.GetComponent<DialogController>().DialogNodes.
-                    Add(new DialogNode(_newNodeTitle, _newNodeText, (DialogNode.NodeType)_selectedNodeType));
+                CreateNewNode(_selectedNodeType, _newNodeTitle, _newNodeText);
             }
 
             _selectedNodeType = -1;
             _newNodeTitle = "";
             _newNodeText = "";
         }
-
-        // Remove existing node
-        if (GUI.Button(new Rect(position.width / 2  - _inspectorWidth * Convert.ToInt32(_inspectorShown)/2, 
-            20, position.width / 2  - _inspectorWidth * Convert.ToInt32(_inspectorShown)/2, 60), "REMOVE NODE"))
-        {
-            dialogActor.GetComponent<DialogController>().DialogNodes.RemoveAt(_lastTouchedWindow);
-        }
-
+        
         if (_creatingNode)
         {
             // Title "box"
@@ -167,9 +159,9 @@ public class DialogWindow : EditorWindow
         }
         
         BeginWindows();
-        for (int i = 0; i < dialogActor.GetComponent<DialogController>().DialogNodes.Count; i++)
+        for (int i = 0; i < _dialogController.DialogNodes.Count; i++)
         {
-            dialogActor.GetComponent<DialogController>().DialogNodes[i].WindowID = i;
+            _dialogController.DialogNodes[i].WindowID = i;
             Color oldColor = GUI.color;
             GUI.color = _colorPallete[(int) _dialogController.DialogNodes[i].DialogNodeType];
             _dialogController.DialogNodes[i].NodeRect = 
@@ -202,8 +194,7 @@ public class DialogWindow : EditorWindow
     }
 
     void DrawActorPanel()
-    { 
-        if(_centeredStyle != null){}
+    {
         GUI.Label(new Rect(position.width/4, 40, position.width/2, 40), 
             "Selected Game Object is not Dialog Actor!", _centeredStyle);
         if(GUI.Button(new Rect(position.width / 4, 80, position.width / 2, 40),
@@ -225,7 +216,7 @@ public class DialogWindow : EditorWindow
         GUI.Box(new Rect(position.width - _inspectorWidth, 0, _inspectorWidth, position.height), "", inspectorStyle);
         GUI.color = oldColor;
 
-        if (_lastTouchedWindow == -1 || dialogActor.GetComponent<DialogController>().DialogNodes.Count - 1 < _lastTouchedWindow)
+        if (_lastTouchedWindow == -1 || _dialogController.DialogNodes.Count - 1 < _lastTouchedWindow)
         {
             GUI.Label(new Rect(position.width - _inspectorWidth, 20, _inspectorWidth, 20), 
                 "Please select node to enter inspector!");
@@ -241,29 +232,29 @@ public class DialogWindow : EditorWindow
             // Title info
             GUI.Label(new Rect(position.width - _inspectorWidth, 80, _inspectorWidth/2, 20),
                 "Node title");
-            dialogActor.GetComponent<DialogController>().FindNodeByWindowID(_lastTouchedWindow).Title =
+            _dialogController.FindNodeByWindowID(_lastTouchedWindow).Title =
                 GUI.TextField(
                     new Rect(position.width - _inspectorWidth/2, 80, _inspectorWidth/2, 20),
-                    dialogActor.GetComponent<DialogController>().FindNodeByWindowID(_lastTouchedWindow).Title);
+                    _dialogController.FindNodeByWindowID(_lastTouchedWindow).Title);
             
             // Text info
             GUI.Label(new Rect(position.width - _inspectorWidth, 110, _inspectorWidth/2, 20),
                 "Node text");
-            dialogActor.GetComponent<DialogController>().FindNodeByWindowID(_lastTouchedWindow).Text =
+           _dialogController.FindNodeByWindowID(_lastTouchedWindow).Text =
                 GUI.TextField(
                     new Rect(position.width - _inspectorWidth/2, 110, _inspectorWidth/2, 20),
-                    dialogActor.GetComponent<DialogController>().FindNodeByWindowID(_lastTouchedWindow).Text);
+                   _dialogController.FindNodeByWindowID(_lastTouchedWindow).Text);
             
             // Node type info
             GUI.Label(new Rect(position.width - _inspectorWidth, 140, _inspectorWidth/2, 20),
                 "Type of node");
 
             if (GUI.Button(new Rect(position.width - _inspectorWidth / 2, 140, _inspectorWidth / 2, 20),
-                "Change to " + ((DialogNode.NodeType) ((int) dialogActor.GetComponent<DialogController>()
+                "Change to " + ((DialogNode.NodeType) ((int) _dialogController
                     .FindNodeByWindowID(_lastTouchedWindow).DialogNodeType * -1 + 1))))
             {
-                dialogActor.GetComponent<DialogController>().FindNodeByWindowID(_lastTouchedWindow).
-                    DialogNodeType = (DialogNode.NodeType)((int)dialogActor.GetComponent<DialogController>().FindNodeByWindowID(_lastTouchedWindow).
+                _dialogController.FindNodeByWindowID(_lastTouchedWindow).
+                    DialogNodeType = (DialogNode.NodeType)((int)_dialogController.FindNodeByWindowID(_lastTouchedWindow).
                     DialogNodeType * -1 + 1);
             }
 
@@ -277,8 +268,7 @@ public class DialogWindow : EditorWindow
             new Rect(0,-30, 100, 100),
             _dialogController.FindNodeByWindowID(windowID).Title, _centeredStyle);
         
-        Rect windowRect = dialogActor.GetComponent<DialogController>().
-            FindNodeByWindowID(windowID).NodeRect;
+        Rect windowRect = _dialogController.FindNodeByWindowID(windowID).NodeRect;
 
         Rect relativeRect = GUIUtility.GUIToScreenRect(new Rect(
             0, 
@@ -335,7 +325,29 @@ public class DialogWindow : EditorWindow
     {
         Rect windowRect = _dialogController.FindNodeByWindowID(windowID).NodeRect;
         Rect firstButtonPos = new Rect(windowRect.x + windowRect.width, windowRect.y, 200, 50);
+        
+        if (GUI.Button(new Rect(firstButtonPos.x, firstButtonPos.y - firstButtonPos.height,
+            firstButtonPos.width, firstButtonPos.height), "Destroy node"))
+        {
+            _destroyLinksMode = false;
+            _linkingMode = false;
+            _customDropDownShown = false;
 
+            foreach (var node in _dialogController.DialogNodes)
+            {
+                foreach (var linkedId in node.LinkedIds)
+                {
+                    if (linkedId == windowID)
+                    {
+                        node.LinkedIds.Remove(windowID);
+                        break;
+                    }
+                }
+            }
+            
+            _dialogController.DialogNodes.Remove(_dialogController.FindNodeByWindowID(windowID));
+        }
+        
         if (GUI.Button(firstButtonPos, "Make new link"))
         {
             _linkingMode = true;
@@ -357,6 +369,11 @@ public class DialogWindow : EditorWindow
         }
     }
 
+    void CreateNewNode(int __selectedNodeType, string __newNodeTitle, string __newNodeText)
+    {
+        _dialogController.DialogNodes.Add(new DialogNode(__newNodeTitle, __newNodeText, (DialogNode.NodeType)__selectedNodeType));
+    }
+    
     private List<DialogNode[]> LinkedNodes()
     {
         List<DialogNode[]> result = new List<DialogNode[]>();
