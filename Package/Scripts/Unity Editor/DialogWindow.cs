@@ -49,8 +49,7 @@ public class DialogWindow : EditorWindow
         
         if (_centeredStyle == null)
         {
-            _centeredStyle = GUI.skin.label;
-            _centeredStyle.alignment = TextAnchor.MiddleCenter;
+            _centeredStyle = _dialogSystemInfo.CenteredLabel();
         }
         
         _inspectorWidth = position.width / 4;
@@ -174,19 +173,51 @@ public class DialogWindow : EditorWindow
         Handles.BeginGUI();
         List<DialogNode[]> linkednodes = LinkedNodes();
         foreach (var pair in linkednodes)
-        { 
-            Handles.DrawBezier(
-                new Vector2(pair[0].NodeRect.x, pair[0].NodeRect.center.y), 
-                new Vector2(pair[1].NodeRect.x + pair[1].NodeRect.width, pair[1].NodeRect.center.y),
-                 new Vector2(pair[0].NodeRect.xMax + 50f, pair[0].NodeRect.center.y),
-                 new Vector2(pair[1].NodeRect.xMax + 50f, pair[1].NodeRect.center.y),
-                 _colorPallete[2], null, 6f);
+        {
+            Vector3[] startTangent;
+            Vector3[] endTangent;
             
+            // Pair[0] is a root of pair[1]
+            if (pair[0].NodeRect.center.y < pair[1].NodeRect.center.y)
+            {
+                if (pair[0].NodeRect.center.x > pair[1].NodeRect.center.x)
+                {
+                    startTangent = new[]
+                    {
+                        new Vector3
+                            (
+                                // https://en.wikipedia.org/wiki/B%C3%A9zier_curve
+                                
+                                ),
+                        new Vector3(),
+                    };
+
+                    endTangent = new[]
+                    {
+                        new Vector3(pair[0].NodeRect.center.x,
+                            pair[1].NodeRect.y - pair[1].NodeRect.height -
+                            (pair[1].NodeRect.y - pair[0].NodeRect.y) / 4),
+                        new Vector3(pair[1].NodeRect.center.x,
+                            pair[1].NodeRect.y - pair[1].NodeRect.height -
+                            (pair[1].NodeRect.y - pair[0].NodeRect.y) / 4),
+                    };
+                }else if (pair[0].NodeRect.center.x < pair[1].NodeRect.center.x)
+                {
+                    
+                }
+                
+            }
+            else
+            {
+                // TODO
+                Debug.LogWarning("Please adjust position of rects in editors to see links (root node should not be \"lower\" than linked node).");
+            }
+
             GUI.DrawTexture(
                 new Rect
                 (
-                    pair[1].NodeRect.x + pair[1].NodeRect.width - _dialogSystemInfo.ArrowSize, 
-                    pair[1].NodeRect.center.y - _dialogSystemInfo.ArrowSize / 2, 
+                    pair[1].NodeRect.center.x - _dialogSystemInfo.ArrowSize, 
+                    pair[1].NodeRect.y - _dialogSystemInfo.ArrowSize / 2, 
                     _dialogSystemInfo.ArrowSize,
                     _dialogSystemInfo.ArrowSize), _dialogSystemInfo.ArrowTexture, ScaleMode.ScaleToFit);
         }
@@ -200,7 +231,7 @@ public class DialogWindow : EditorWindow
         if(GUI.Button(new Rect(position.width / 4, 80, position.width / 2, 40),
             "Create new dialog actor"))
         {
-            dialogActor.AddComponent<DialogController>();
+            _dialogController = dialogActor.AddComponent<DialogController>();
             _actorCreated = true;
         }
     }
