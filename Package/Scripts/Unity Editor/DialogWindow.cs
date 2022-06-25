@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.XR;
 using Object = UnityEngine.Object;
 
 public class DialogWindow : EditorWindow
@@ -176,42 +177,53 @@ public class DialogWindow : EditorWindow
         {
             Vector3[] startTangent;
             Vector3[] endTangent;
-            
-            // Pair[0] is a root of pair[1]
-            if (pair[0].NodeRect.center.y < pair[1].NodeRect.center.y)
+            Vector3 distance = new Vector3(pair[0].NodeRect.x - pair[1].NodeRect.x,
+                pair[0].NodeRect.y - pair[1].NodeRect.y);
+            Vector3 middlePoint = new Vector3(pair[0].NodeRect.center.x - distance.x/2,
+                pair[0].NodeRect.center.y - distance.y/2);
+            Vector3[] points =
             {
-                if (pair[0].NodeRect.center.x > pair[1].NodeRect.center.x)
+                new Vector3(pair[0].NodeRect.center.x, pair[0].NodeRect.y + pair[0].NodeRect.height),
+                new Vector3(middlePoint.x, middlePoint.y),
+                new Vector3(pair[1].NodeRect.center.x, pair[1].NodeRect.y)
+            };
+
+            float proportions = (points[0].x - points[1].x) / (points[0].y - points[1].y);
+
+            // Pair[0] is a root of pair[1]
+
+            if (distance.y < 0)
+            {
+                if (distance.x > 0)
                 {
                     startTangent = new[]
                     {
-                        new Vector3
-                            (
-                                // https://en.wikipedia.org/wiki/B%C3%A9zier_curve
-                                
-                                ),
-                        new Vector3(),
+                        new Vector3(points[0].x - 20 - 50 * (1 / proportions), points[0].y - 50 * proportions),
+                        new Vector3(points[1].x + 50 * (1 / proportions), points[1].y + 50 * proportions)
                     };
-
                     endTangent = new[]
                     {
-                        new Vector3(pair[0].NodeRect.center.x,
-                            pair[1].NodeRect.y - pair[1].NodeRect.height -
-                            (pair[1].NodeRect.y - pair[0].NodeRect.y) / 4),
-                        new Vector3(pair[1].NodeRect.center.x,
-                            pair[1].NodeRect.y - pair[1].NodeRect.height -
-                            (pair[1].NodeRect.y - pair[0].NodeRect.y) / 4),
+                        new Vector3(points[1].x - 50 * (1 / proportions), points[1].y - 50 * proportions),
+                        new Vector3(points[2].x + 50 * (1 / proportions), points[2].y + 50 * proportions)
                     };
-                }else if (pair[0].NodeRect.center.x < pair[1].NodeRect.center.x)
+                }
+                else if (distance.x < 0)
                 {
                     
                 }
                 
+                Handles.DrawBezier(points[0], points[1], startTangent[0], endTangent[0],
+                    _colorPallete[2], null, 6f);
+
+                Handles.DrawBezier(points[1], points[2], startTangent[1], endTangent[1],
+                    _colorPallete[2], null, 6f);
             }
             else
             {
                 // TODO
                 Debug.LogWarning("Please adjust position of rects in editors to see links (root node should not be \"lower\" than linked node).");
             }
+            
 
             GUI.DrawTexture(
                 new Rect
