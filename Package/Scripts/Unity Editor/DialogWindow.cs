@@ -175,48 +175,24 @@ public class DialogWindow : EditorWindow
         List<DialogNode[]> linkednodes = LinkedNodes();
         foreach (var pair in linkednodes)
         {
-            Vector3[] startTangent;
-            Vector3[] endTangent;
             Vector3 distance = new Vector3(pair[0].NodeRect.x - pair[1].NodeRect.x,
-                pair[0].NodeRect.y - pair[1].NodeRect.y);
-            Vector3 middlePoint = new Vector3(pair[0].NodeRect.center.x - distance.x/2,
-                pair[0].NodeRect.center.y - distance.y/2);
-            Vector3[] points =
+                pair[0].NodeRect.y - pair[0].NodeRect.height - pair[1].NodeRect.y);
+            Vector3 middlePoint =
+                new Vector3(pair[0].NodeRect.center.x - distance.x / 2, pair[0].NodeRect.y - distance.y / 2);
+        
+            
+            Vector3[] tangentPoint = 
             {
-                new Vector3(pair[0].NodeRect.center.x, pair[0].NodeRect.y + pair[0].NodeRect.height),
-                new Vector3(middlePoint.x, middlePoint.y),
-                new Vector3(pair[1].NodeRect.center.x, pair[1].NodeRect.y)
+                new Vector3(pair[0].NodeRect.center.x, middlePoint.y),
+                new Vector3(pair[1].NodeRect.center.x, middlePoint.y)
             };
+            Vector3 startPoint = new Vector3(pair[0].NodeRect.center.x, pair[0].NodeRect.y + pair[0].NodeRect.height);
+            Vector3 endPoint = new Vector3(pair[1].NodeRect.center.x, pair[1].NodeRect.y);
 
-            float proportions = (points[0].x - points[1].x) / (points[0].y - points[1].y);
-
-            // Pair[0] is a root of pair[1]
-
-            if (distance.y < 0)
+            if (pair[0].NodeRect.y + pair[0].NodeRect.height - pair[1].NodeRect.y < 0)
             {
-                if (distance.x > 0)
-                {
-                    startTangent = new[]
-                    {
-                        new Vector3(points[0].x - 20 - 50 * (1 / proportions), points[0].y - 50 * proportions),
-                        new Vector3(points[1].x + 50 * (1 / proportions), points[1].y + 50 * proportions)
-                    };
-                    endTangent = new[]
-                    {
-                        new Vector3(points[1].x - 50 * (1 / proportions), points[1].y - 50 * proportions),
-                        new Vector3(points[2].x + 50 * (1 / proportions), points[2].y + 50 * proportions)
-                    };
-                }
-                else if (distance.x < 0)
-                {
-                    
-                }
-                
-                Handles.DrawBezier(points[0], points[1], startTangent[0], endTangent[0],
-                    _colorPallete[2], null, 6f);
-
-                Handles.DrawBezier(points[1], points[2], startTangent[1], endTangent[1],
-                    _colorPallete[2], null, 6f);
+                Handles.DrawBezier(startPoint, middlePoint, tangentPoint[0], tangentPoint[0], _colorPallete[2], null, 6f);
+                Handles.DrawBezier(middlePoint, endPoint, tangentPoint[1], tangentPoint[1], _colorPallete[2], null, 6f);
             }
             else
             {
