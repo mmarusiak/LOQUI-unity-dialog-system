@@ -307,19 +307,19 @@ public class DialogWindow : EditorWindow
            }
 
            // Method Info
-           GUI.Label(new Rect(position.width - _inspectorWidth + 10, 260, _inspectorWidth/3 - 30, 20),
+           GUI.Label(new Rect(position.width - _inspectorWidth + 10, 260, _inspectorWidth/2, 20),
                "Method name");
            _dialogController.FindNodeByWindowID(_lastTouchedWindow).MethodName = GUI.TextField(
                    new Rect(position.width - _inspectorWidth/2, 260, _inspectorWidth/2 - 10, 20),
                    _dialogController.FindNodeByWindowID(_lastTouchedWindow).MethodName);
-           GUI.Label(new Rect(position.width - _inspectorWidth/2, 275, _inspectorWidth/2 - 10, 40),
+           GUI.Label(new Rect(position.width - _inspectorWidth/2, 278, _inspectorWidth/2 - 10, 40),
                "Leave blank if  there is no method to call after this line of dialog", 
                paragraph);
            
            // Arguments for method
            if (_dialogController.FindNodeByWindowID(_lastTouchedWindow).MethodName != "")
            {
-               GUI.Label(new Rect(position.width - _inspectorWidth + 10, 320, _inspectorWidth/3, 20),
+               GUI.Label(new Rect(position.width - _inspectorWidth + 10, 320, _inspectorWidth/2, 20),
                    "Method arguments");
                _selectedArgumentType = EditorGUI.Popup(
                    new Rect(position.width - _inspectorWidth/3 + 10, 322, _inspectorWidth / 3 - 30, 20),
@@ -328,13 +328,13 @@ public class DialogWindow : EditorWindow
                {
                    case 0: // String
                        _argument = GUI.TextField(
-                           new Rect(position.width - 2 * _inspectorWidth / 3 + 10, 322, _inspectorWidth / 3 - 30, 20),
+                           new Rect(position.width - 2 * _inspectorWidth / 3 + 30, 322, _inspectorWidth / 3 - 30, 20),
                            _argument.ToString());
                        break;
                    case 1: // Int
                        object oldValue = _argument;
                        bool isInt = int.TryParse(GUI.TextField(
-                           new Rect(position.width - 2 * _inspectorWidth / 3 + 10, 322, _inspectorWidth / 3 - 30, 20),
+                           new Rect(position.width - 2 * _inspectorWidth / 3 + 30, 322, _inspectorWidth / 3 - 30, 20),
                            _argument.ToString()), out var newInt);
                        
                        _argument = isInt ? newInt : oldValue;
@@ -342,7 +342,7 @@ public class DialogWindow : EditorWindow
                    case 2: // Double
                        oldValue = _argument;
                        bool isDouble = Double.TryParse(GUI.TextField(
-                           new Rect(position.width - 2 * _inspectorWidth / 3 + 10, 322, _inspectorWidth / 3 - 30, 20),
+                           new Rect(position.width - 2 * _inspectorWidth / 3 + 30, 322, _inspectorWidth / 3 - 30, 20),
                            _argument.ToString()), out var newDouble);
                        
                        _argument = isDouble ? newDouble : oldValue;
@@ -350,14 +350,14 @@ public class DialogWindow : EditorWindow
                    case 3: // Float
                        oldValue = _argument;
                        bool isFloat = float.TryParse(GUI.TextField(
-                           new Rect(position.width - 2 * _inspectorWidth / 3 + 10, 322, _inspectorWidth / 3 - 30, 20),
+                           new Rect(position.width - 2 * _inspectorWidth / 3 + 30, 322, _inspectorWidth / 3 - 30, 20),
                            _argument.ToString()), out var newFloat);
                        
                        _argument = isFloat ? newFloat : oldValue;
                        break;
                    case 4: // Bool
                        _boolArgument = EditorGUI.Popup(
-                           new Rect(position.width - 2 * _inspectorWidth / 3 + 10, 322, _inspectorWidth / 3 - 30, 20),
+                           new Rect(position.width - 2 * _inspectorWidth / 3 + 30, 322, _inspectorWidth / 3 - 30, 20),
                            _boolArgument, new[] {"False", "True"});
                        _argument = _boolArgument == 1;
                        break;
@@ -367,6 +367,8 @@ public class DialogWindow : EditorWindow
                    "Add argument"))
                {
                    _dialogController.FindNodeByWindowID(_lastTouchedWindow).MethodArguments.Add(_argument);
+                   _argument = null;
+                   _selectedNodeType = -1;
                }
            }
            
