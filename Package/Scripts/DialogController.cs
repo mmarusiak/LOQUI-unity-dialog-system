@@ -13,7 +13,18 @@ public class DialogController : MonoBehaviour
             if (dialogNode.WindowID == windowID) 
                 return dialogNode;
         }
-
         return null;
+    }
+
+    public void CallMethod(string methodName, params object[] arguments)
+    {
+        SendMessage("", "");
+        if (methodName != "")
+        {
+            if(arguments.Length > 0)
+                SendMessage(methodName, arguments);
+            else
+                SendMessage(methodName);    
+        }
     }
 }

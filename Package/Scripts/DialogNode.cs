@@ -15,6 +15,9 @@ public class DialogNode
     public int WindowID;
     public Rect NodeRect = new Rect (100, 100, 100, 100);
     public NodeType DialogNodeType;
+    public AudioClip DialogTextAudio;
+    public string MethodName;
+    public List<object> MethodArguments = new List<object>();
 
     public List<int> LinkedIds = new List<int>();
 

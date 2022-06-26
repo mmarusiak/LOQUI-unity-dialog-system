@@ -10,10 +10,18 @@ public class DialogWindow : EditorWindow
 {
     private bool _creatingNode = false, _actorCreated = false, _inspectorShown = true, 
         _linkingMode = false, _destroyLinksMode = false, _customDropDownShown;
-    private string _newNodeTitle = "", _newNodeText = "";
-    private int _selectedNodeType = -1, _selectedActor = -1, _lastTouchedWindow = -1;
+    private string _newNodeTitle = "", _newNodeText = "", _audioClipName = "";
+    private int _selectedNodeType = -1, _selectedActor = -1, _selectedArgumentType = -1, _boolArgument = -1, _lastTouchedWindow = -1;
     private float _inspectorWidth = 140;
-    private GUIStyle _centeredStyle = null;
+    private string[] _argumentTypes = {
+        "String",
+        "Int",
+        "Double",
+        "Float",
+        "Bool"
+    };
+
+    private object _argument = "";
     
     private DialogController _dialogController;
     private DialogSystemInfo _dialogSystemInfo;
@@ -47,12 +55,6 @@ public class DialogWindow : EditorWindow
             }
 
         }
-        
-        if (_centeredStyle == null)
-        {
-            _centeredStyle = _dialogSystemInfo.CenteredLabel();
-        }
-        
         _inspectorWidth = position.width / 4;
         DrawStaticGroup();
         
@@ -179,15 +181,14 @@ public class DialogWindow : EditorWindow
                 pair[0].NodeRect.y - pair[0].NodeRect.height - pair[1].NodeRect.y);
             Vector3 middlePoint =
                 new Vector3(pair[0].NodeRect.center.x - distance.x / 2, pair[0].NodeRect.y - distance.y / 2);
-        
+            Vector3 startPoint = new Vector3(pair[0].NodeRect.center.x, pair[0].NodeRect.y + pair[0].NodeRect.height);
+            Vector3 endPoint = new Vector3(pair[1].NodeRect.center.x, pair[1].NodeRect.y);
             
             Vector3[] tangentPoint = 
             {
                 new Vector3(pair[0].NodeRect.center.x, middlePoint.y),
                 new Vector3(pair[1].NodeRect.center.x, middlePoint.y)
             };
-            Vector3 startPoint = new Vector3(pair[0].NodeRect.center.x, pair[0].NodeRect.y + pair[0].NodeRect.height);
-            Vector3 endPoint = new Vector3(pair[1].NodeRect.center.x, pair[1].NodeRect.y);
 
             if (pair[0].NodeRect.y + pair[0].NodeRect.height - pair[1].NodeRect.y < 0)
             {
@@ -204,8 +205,8 @@ public class DialogWindow : EditorWindow
             GUI.DrawTexture(
                 new Rect
                 (
-                    pair[1].NodeRect.center.x - _dialogSystemInfo.ArrowSize, 
-                    pair[1].NodeRect.y - _dialogSystemInfo.ArrowSize / 2, 
+                    pair[1].NodeRect.center.x - _dialogSystemInfo.ArrowSize/2, 
+                    pair[1].NodeRect.y - 2, 
                     _dialogSystemInfo.ArrowSize,
                     _dialogSystemInfo.ArrowSize), _dialogSystemInfo.ArrowTexture, ScaleMode.ScaleToFit);
         }
@@ -214,8 +215,12 @@ public class DialogWindow : EditorWindow
 
     void DrawActorPanel()
     {
+        GUIStyle infoStyle = new GUIStyle(GUI.skin.label);
+        infoStyle.alignment = TextAnchor.MiddleCenter;
+        infoStyle.fontStyle = FontStyle.Bold;
+        infoStyle.fontSize = 22;
         GUI.Label(new Rect(position.width/4, 40, position.width/2, 40), 
-            "Selected Game Object is not Dialog Actor!", _centeredStyle);
+            "Selected Game Object is not Dialog Actor!", infoStyle);
         if(GUI.Button(new Rect(position.width / 4, 80, position.width / 2, 40),
             "Create new dialog actor"))
         {
@@ -229,8 +234,15 @@ public class DialogWindow : EditorWindow
         // Background for inspector
         Color oldColor = GUI.color;
         Color32 inspectorColor = new Color32(92, 92, 92, 255);
+        
         GUIStyle inspectorStyle = new GUIStyle(GUI.skin.box);
         inspectorStyle.normal.background = MakeTex( 2, 2, inspectorColor);
+
+        GUIStyle paragraph = new GUIStyle(GUI.skin.label);
+        paragraph.fontStyle = FontStyle.Italic;
+        paragraph.fontSize = 10;
+        paragraph.wordWrap = true;
+        
 
         GUI.Box(new Rect(position.width - _inspectorWidth, 0, _inspectorWidth, position.height), "", inspectorStyle);
         GUI.color = oldColor;
@@ -243,49 +255,132 @@ public class DialogWindow : EditorWindow
         else
         {
             // Game object name
-            GUIStyle goNameStyle = _centeredStyle;
+            GUIStyle goNameStyle = new GUIStyle(GUI.skin.label);
+            goNameStyle.alignment = TextAnchor.MiddleCenter;
             goNameStyle.fontStyle = FontStyle.Bold;
-            GUI.Label(new Rect(position.width - _inspectorWidth, 40, _inspectorWidth, 40), 
-               dialogActor.name, goNameStyle);
+            goNameStyle.normal.textColor = Color.white;
+            goNameStyle.fontSize = 20;
             
+            GUI.Label(new Rect(position.width - _inspectorWidth + 10, 40, _inspectorWidth, 40), 
+               dialogActor.name, goNameStyle);
+
             // Title info
-            GUI.Label(new Rect(position.width - _inspectorWidth, 80, _inspectorWidth/2, 20),
+            GUI.Label(new Rect(position.width - _inspectorWidth + 10, 80, _inspectorWidth/2 - 20, 20),
                 "Node title");
             _dialogController.FindNodeByWindowID(_lastTouchedWindow).Title =
                 GUI.TextField(
-                    new Rect(position.width - _inspectorWidth/2, 80, _inspectorWidth/2, 20),
+                    new Rect(position.width - _inspectorWidth/2, 80, _inspectorWidth/2 - 10, 20),
                     _dialogController.FindNodeByWindowID(_lastTouchedWindow).Title);
             
             // Text info
-            GUI.Label(new Rect(position.width - _inspectorWidth, 110, _inspectorWidth/2, 20),
+            GUI.Label(new Rect(position.width - _inspectorWidth + 10, 140, _inspectorWidth/2 - 20, 20),
                 "Node text");
            _dialogController.FindNodeByWindowID(_lastTouchedWindow).Text =
                 GUI.TextField(
-                    new Rect(position.width - _inspectorWidth/2, 110, _inspectorWidth/2, 20),
+                    new Rect(position.width - _inspectorWidth/2, 140, _inspectorWidth/2 - 10, 20),
                    _dialogController.FindNodeByWindowID(_lastTouchedWindow).Text);
-            
-            // Node type info
-            GUI.Label(new Rect(position.width - _inspectorWidth, 140, _inspectorWidth/2, 20),
-                "Type of node");
 
-            if (GUI.Button(new Rect(position.width - _inspectorWidth / 2, 140, _inspectorWidth / 2, 20),
-                "Change to " + ((DialogNode.NodeType) ((int) _dialogController
-                    .FindNodeByWindowID(_lastTouchedWindow).DialogNodeType * -1 + 1))))
-            {
-                _dialogController.FindNodeByWindowID(_lastTouchedWindow).
-                    DialogNodeType = (DialogNode.NodeType)((int)_dialogController.FindNodeByWindowID(_lastTouchedWindow).
-                    DialogNodeType * -1 + 1);
-            }
+           // Audio Clip
+           
+           // https://answers.unity.com/questions/900576/how-to-obtain-selected-files-in-the-project-window.html
+           string boxText = "Select clip!";
+           List<AudioClip> audioClips = new List<AudioClip>();
+           foreach (Object o in Selection.objects)
+           {
+               if (o is AudioClip clip)
+               {
+                   audioClips.Add(clip);
+                   _audioClipName = audioClips[0].name;
+                   boxText = _audioClipName;
+               }
+           }
+           
+           GUI.Label(new Rect(position.width - _inspectorWidth + 10, 200, _inspectorWidth/3 - 30, 20),
+               "Audio clip");
+           GUI.Box(new Rect(position.width - 2 * _inspectorWidth/3 + 10, 202, _inspectorWidth/3 - 30, 20), 
+               boxText);
 
+           if (GUI.Button(new Rect(position.width - _inspectorWidth / 3 + 10, 202, _inspectorWidth / 3 - 30, 20),
+               "Set") && audioClips.Count > 0)
+           {
+               _dialogController.FindNodeByWindowID(_lastTouchedWindow).DialogTextAudio = audioClips[0];
+           }
+
+           // Method Info
+           GUI.Label(new Rect(position.width - _inspectorWidth + 10, 260, _inspectorWidth/3 - 30, 20),
+               "Method name");
+           _dialogController.FindNodeByWindowID(_lastTouchedWindow).MethodName = GUI.TextField(
+                   new Rect(position.width - _inspectorWidth/2, 260, _inspectorWidth/2 - 10, 20),
+                   _dialogController.FindNodeByWindowID(_lastTouchedWindow).MethodName);
+           GUI.Label(new Rect(position.width - _inspectorWidth/2, 275, _inspectorWidth/2 - 10, 40),
+               "Leave blank if  there is no method to call after this line of dialog", 
+               paragraph);
+           
+           // Arguments for method
+           if (_dialogController.FindNodeByWindowID(_lastTouchedWindow).MethodName != "")
+           {
+               GUI.Label(new Rect(position.width - _inspectorWidth + 10, 320, _inspectorWidth/3, 20),
+                   "Method arguments");
+               _selectedArgumentType = EditorGUI.Popup(
+                   new Rect(position.width - _inspectorWidth/3 + 10, 322, _inspectorWidth / 3 - 30, 20),
+                   _selectedArgumentType, _argumentTypes);
+               switch (_selectedArgumentType)
+               {
+                   case 0: // String
+                       _argument = GUI.TextField(
+                           new Rect(position.width - 2 * _inspectorWidth / 3 + 10, 322, _inspectorWidth / 3 - 30, 20),
+                           _argument.ToString());
+                       break;
+                   case 1: // Int
+                       object oldValue = _argument;
+                       bool isInt = int.TryParse(GUI.TextField(
+                           new Rect(position.width - 2 * _inspectorWidth / 3 + 10, 322, _inspectorWidth / 3 - 30, 20),
+                           _argument.ToString()), out var newInt);
+                       
+                       _argument = isInt ? newInt : oldValue;
+                       break;
+                   case 2: // Double
+                       oldValue = _argument;
+                       bool isDouble = Double.TryParse(GUI.TextField(
+                           new Rect(position.width - 2 * _inspectorWidth / 3 + 10, 322, _inspectorWidth / 3 - 30, 20),
+                           _argument.ToString()), out var newDouble);
+                       
+                       _argument = isDouble ? newDouble : oldValue;
+                       break;
+                   case 3: // Float
+                       oldValue = _argument;
+                       bool isFloat = float.TryParse(GUI.TextField(
+                           new Rect(position.width - 2 * _inspectorWidth / 3 + 10, 322, _inspectorWidth / 3 - 30, 20),
+                           _argument.ToString()), out var newFloat);
+                       
+                       _argument = isFloat ? newFloat : oldValue;
+                       break;
+                   case 4: // Bool
+                       _boolArgument = EditorGUI.Popup(
+                           new Rect(position.width - 2 * _inspectorWidth / 3 + 10, 322, _inspectorWidth / 3 - 30, 20),
+                           _boolArgument, new[] {"False", "True"});
+                       _argument = _boolArgument == 1;
+                       break;
+               }
+
+               if (GUI.Button(new Rect(position.width - _inspectorWidth + 10, 360, _inspectorWidth - 20, 30),
+                   "Add argument"))
+               {
+                   _dialogController.FindNodeByWindowID(_lastTouchedWindow).MethodArguments.Add(_argument);
+               }
+           }
+           
         }
     }
     
     void WindowFunction (int windowID)
     {
-        // TO CENTER - centered style doesnt work
+        GUIStyle labelStyle = new GUIStyle(GUI.skin.label);
+        labelStyle.normal.textColor = Color.white;
+
         GUI.Label(
             new Rect(0,-30, 100, 100),
-            _dialogController.FindNodeByWindowID(windowID).Title, _centeredStyle);
+            _dialogController.FindNodeByWindowID(windowID).Title, labelStyle);
         
         Rect windowRect = _dialogController.FindNodeByWindowID(windowID).NodeRect;
 
