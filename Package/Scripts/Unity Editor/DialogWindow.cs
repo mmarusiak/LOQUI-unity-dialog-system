@@ -3,16 +3,21 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.XR;
 using Object = UnityEngine.Object;
 
 public class DialogWindow : EditorWindow
 {
-    private bool _creatingNode = false, _actorCreated = false, _inspectorShown = true, 
-        _linkingMode = false, _destroyLinksMode = false, _customDropDownShown;
+    private bool _creatingNode = false,
+        _actorCreated = false,
+        _inspectorShown = true,
+        _linkingMode = false,
+        _destroyLinksMode = false,
+        _customDropDownShown = false;
     private string _newNodeTitle = "", _newNodeText = "", _audioClipName = "";
-    private int _selectedNodeType = -1, _selectedActor = -1, _selectedArgumentType = -1, _boolArgument = -1, _lastTouchedWindow = -1;
+    private int _selectedNodeType = -1, _selectedActor = -1, _selectedArgumentType = -1, _boolArgument = -1, 
+        _lastTouchedWindow = -1, _navigationSize = 50;
     private float _inspectorWidth = 140;
+    private object _argument = "";
     private string[] _argumentTypes = {
         "String",
         "Int",
@@ -20,9 +25,13 @@ public class DialogWindow : EditorWindow
         "Float",
         "Bool"
     };
+    private string[] _navigationSymbols =
+    {
+        "←", "↓", "→", "↑"
+    };
+    private Vector3 _oldWindowSize;
+    private Rect[] _navigationRect;
 
-    private object _argument = "";
-    
     private DialogController _dialogController;
     private DialogSystemInfo _dialogSystemInfo;
     public GameObject dialogActor;
@@ -61,7 +70,22 @@ public class DialogWindow : EditorWindow
         if (_actorCreated)
         {
             DrawMainPanel();
+
             
+            _navigationRect = new[]
+            {
+                new Rect(0, 80 + 120 * Convert.ToInt32(_creatingNode), _navigationSize,
+                    position.height - 80 - 120 * Convert.ToInt32(_creatingNode)),
+                new Rect(0, position.height - _navigationSize,
+                    position.width - Convert.ToInt32(_inspectorShown) * _inspectorWidth, _navigationSize),
+                new Rect(position.width - _inspectorWidth * Convert.ToInt32(_inspectorShown) - _navigationSize,
+                    80 + 120 * Convert.ToInt32(_creatingNode), _navigationSize,
+                    position.height - 80 - 120 * Convert.ToInt32(_creatingNode)),
+                new Rect(0, 80 + 120 * Convert.ToInt32(_creatingNode),
+                    position.width - _inspectorWidth * Convert.ToInt32(_inspectorShown), _navigationSize)
+                };
+ 
+
             if (_inspectorShown)
             {
                 DrawInspector();
@@ -78,10 +102,20 @@ public class DialogWindow : EditorWindow
         }
     }
 
+    private bool WasResized()
+    {
+        bool result = (_oldWindowSize.x != position.width || _oldWindowSize.y != position.height);
+        
+        _oldWindowSize.x = position.width;
+        _oldWindowSize.y = position.height;
+        
+        return result;
+    }
+
     void DrawStaticGroup()
     {
         // Game object popup
-        var allGameObjects = Object.FindObjectsOfType<GameObject>();
+        var allGameObjects = FindObjectsOfType<GameObject>();
         _selectedActor = EditorGUI.Popup(new Rect(0, 0, 140, 20), _selectedActor,allGameObjects.Select(
             (gameobject) => gameobject.name).ToArray());
 
@@ -110,7 +144,7 @@ public class DialogWindow : EditorWindow
                 _inspectorShown = !_inspectorShown;
             }
     }
-    
+
     void DrawMainPanel()
     {
         // Create new node
@@ -166,10 +200,13 @@ public class DialogWindow : EditorWindow
             _dialogController.DialogNodes[i].WindowID = i;
             Color oldColor = GUI.color;
             GUI.color = _colorPallete[(int) _dialogController.DialogNodes[i].DialogNodeType];
-            _dialogController.DialogNodes[i].NodeRect = 
-                GUI.Window(i, _dialogController.DialogNodes[i].NodeRect,
+            _dialogController.DialogNodes[i].NodeRect = GUI.Window(i, _dialogController.DialogNodes[i].NodeRect,
                     WindowFunction, "");
             GUI.color = oldColor;
+        }
+        for (int i = 0; i < _navigationRect.Length; i++) 
+        { 
+            _navigationRect[i] = GUI.Window(100 + i, _navigationRect[i], MoveEditor, _navigationSymbols[i]);
         }
         EndWindows();
         
@@ -195,13 +232,7 @@ public class DialogWindow : EditorWindow
                 Handles.DrawBezier(startPoint, middlePoint, tangentPoint[0], tangentPoint[0], _colorPallete[2], null, 6f);
                 Handles.DrawBezier(middlePoint, endPoint, tangentPoint[1], tangentPoint[1], _colorPallete[2], null, 6f);
             }
-            else
-            {
-                // TODO
-                Debug.LogWarning("Please adjust position of rects in editors to see links (root node should not be \"lower\" than linked node).");
-            }
             
-
             GUI.DrawTexture(
                 new Rect
                 (
@@ -375,6 +406,40 @@ public class DialogWindow : EditorWindow
         }
     }
     
+    void MoveEditor(int windowId)
+    {
+        int id = windowId - 100;
+        Event e = Event.current;
+
+        Rect relativeRect = new Rect(0, 0, _navigationRect[id].width, _navigationRect[id].height);
+        
+        if (relativeRect.Contains(GUIUtility.GUIToScreenPoint(e.mousePosition)))
+        {
+            Vector3 move = Vector3.zero;
+            switch (id)
+            {
+                case 0:
+                    move.x = -10;
+                    break;
+                case 1:
+                    move.y = 10;
+                    break;
+                case 2:
+                    move.x = 10;
+                    break;
+                case 3:
+                    move.y = -10;
+                    break;
+            }
+
+            foreach (var node in _dialogController.DialogNodes)
+            {
+                node.NodeRect.x += move.x;
+                node.NodeRect.y += move.y;
+            }
+        }
+    }
+
     void WindowFunction (int windowID)
     {
         GUIStyle labelStyle = new GUIStyle(GUI.skin.label);
