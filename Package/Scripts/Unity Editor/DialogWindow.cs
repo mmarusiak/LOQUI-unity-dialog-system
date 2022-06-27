@@ -15,21 +15,18 @@ public class DialogWindow : EditorWindow
         _customDropDownShown = false;
     private string _newNodeTitle = "", _newNodeText = "", _audioClipName = "";
     private int _selectedNodeType = -1, _selectedActor = -1, _selectedArgumentType = -1, _boolArgument = -1, 
-        _lastTouchedWindow = -1, _navigationSize = 50;
-    private float _inspectorWidth = 140;
+        _lastTouchedWindow = -1;
+    private float _inspectorWidth = 140, _viewScale = 1f;
     private object _argument = "";
-    private string[] _argumentTypes = {
+
+    private readonly string[] _argumentTypes =
+    {
         "String",
         "Int",
         "Double",
         "Float",
         "Bool"
     };
-    private string[] _navigationSymbols =
-    {
-        "←", "↓", "→", "↑"
-    };
-    private Vector3 _oldWindowSize;
     private Rect[] _navigationRect;
 
     private DialogController _dialogController;
@@ -68,23 +65,8 @@ public class DialogWindow : EditorWindow
         DrawStaticGroup();
         
         if (_actorCreated)
-        {
+        { 
             DrawMainPanel();
-
-            
-            _navigationRect = new[]
-            {
-                new Rect(0, 80 + 120 * Convert.ToInt32(_creatingNode), _navigationSize,
-                    position.height - 80 - 120 * Convert.ToInt32(_creatingNode)),
-                new Rect(0, position.height - _navigationSize,
-                    position.width - Convert.ToInt32(_inspectorShown) * _inspectorWidth, _navigationSize),
-                new Rect(position.width - _inspectorWidth * Convert.ToInt32(_inspectorShown) - _navigationSize,
-                    80 + 120 * Convert.ToInt32(_creatingNode), _navigationSize,
-                    position.height - 80 - 120 * Convert.ToInt32(_creatingNode)),
-                new Rect(0, 80 + 120 * Convert.ToInt32(_creatingNode),
-                    position.width - _inspectorWidth * Convert.ToInt32(_inspectorShown), _navigationSize)
-                };
- 
 
             if (_inspectorShown)
             {
@@ -100,16 +82,23 @@ public class DialogWindow : EditorWindow
         {
             ShowDropDown(_lastTouchedWindow);
         }
-    }
 
-    private bool WasResized()
-    {
-        bool result = (_oldWindowSize.x != position.width || _oldWindowSize.y != position.height);
-        
-        _oldWindowSize.x = position.width;
-        _oldWindowSize.y = position.height;
-        
-        return result;
+        if (Event.current.type == EventType.ScrollWheel)
+        {
+            if (Event.current.delta.y < 0)
+            {
+                _viewScale += 0.1f;
+            }
+            else if(_viewScale > 0)
+            {
+                _viewScale -= 0.1f;
+            }
+
+            foreach (DialogNode node in _dialogController.DialogNodes)
+            {
+                node.NodeRect.size = new Vector2( 100 * _viewScale,100 * _viewScale);
+            }
+        }
     }
 
     void DrawStaticGroup()
@@ -203,10 +192,6 @@ public class DialogWindow : EditorWindow
             _dialogController.DialogNodes[i].NodeRect = GUI.Window(i, _dialogController.DialogNodes[i].NodeRect,
                     WindowFunction, "");
             GUI.color = oldColor;
-        }
-        for (int i = 0; i < _navigationRect.Length; i++) 
-        { 
-            _navigationRect[i] = GUI.Window(100 + i, _navigationRect[i], MoveEditor, _navigationSymbols[i]);
         }
         EndWindows();
         
@@ -405,40 +390,6 @@ public class DialogWindow : EditorWindow
            
         }
     }
-    
-    void MoveEditor(int windowId)
-    {
-        int id = windowId - 100;
-        Event e = Event.current;
-
-        Rect relativeRect = new Rect(0, 0, _navigationRect[id].width, _navigationRect[id].height);
-        
-        if (relativeRect.Contains(GUIUtility.GUIToScreenPoint(e.mousePosition)))
-        {
-            Vector3 move = Vector3.zero;
-            switch (id)
-            {
-                case 0:
-                    move.x = -10;
-                    break;
-                case 1:
-                    move.y = 10;
-                    break;
-                case 2:
-                    move.x = 10;
-                    break;
-                case 3:
-                    move.y = -10;
-                    break;
-            }
-
-            foreach (var node in _dialogController.DialogNodes)
-            {
-                node.NodeRect.x += move.x;
-                node.NodeRect.y += move.y;
-            }
-        }
-    }
 
     void WindowFunction (int windowID)
     {
@@ -553,6 +504,7 @@ public class DialogWindow : EditorWindow
     void CreateNewNode(int __selectedNodeType, string __newNodeTitle, string __newNodeText)
     {
         _dialogController.DialogNodes.Add(new DialogNode(__newNodeTitle, __newNodeText, (DialogNode.NodeType)__selectedNodeType));
+        _dialogController.DialogNodes[^1].NodeRect = new Rect(position.width/2, position.height/2, 100, 100);
     }
     
     private List<DialogNode[]> LinkedNodes()
