@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -16,7 +17,7 @@ public class DialogWindow : EditorWindow
     private string _newNodeTitle = "", _newNodeText = "", _audioClipName = "";
     private int _selectedNodeType = -1, _selectedActor = -1, _selectedArgumentType = -1, _boolArgument = -1, 
         _lastTouchedWindow = -1;
-    private float _inspectorWidth = 140, _viewScale = 1f;
+    private float _inspectorWidth = 140;
     private object _argument = "";
 
     private readonly string[] _argumentTypes =
@@ -81,23 +82,6 @@ public class DialogWindow : EditorWindow
         if (_customDropDownShown)
         {
             ShowDropDown(_lastTouchedWindow);
-        }
-
-        if (Event.current.type == EventType.ScrollWheel)
-        {
-            if (Event.current.delta.y < 0)
-            {
-                _viewScale += 0.1f;
-            }
-            else if(_viewScale > 0)
-            {
-                _viewScale -= 0.1f;
-            }
-
-            foreach (DialogNode node in _dialogController.DialogNodes)
-            {
-                node.NodeRect.size = new Vector2( 100 * _viewScale,100 * _viewScale);
-            }
         }
     }
 
@@ -310,7 +294,6 @@ public class DialogWindow : EditorWindow
                    boxText = _audioClipName;
                }
            }
-           
            GUI.Label(new Rect(position.width - _inspectorWidth + 10, 200, _inspectorWidth/3 - 30, 20),
                "Audio clip");
            GUI.Box(new Rect(position.width - 2 * _inspectorWidth/3 + 10, 202, _inspectorWidth/3 - 30, 20), 
@@ -322,35 +305,61 @@ public class DialogWindow : EditorWindow
                _dialogController.FindNodeByWindowID(_lastTouchedWindow).DialogTextAudio = audioClips[0];
            }
 
+           // Percent chance
+           int ypos = 60;
+           if (_dialogController.FindNodeByWindowID(_lastTouchedWindow).LinkedIds.Count > 0)
+           {
+               while (_dialogController.FindNodeByWindowID(_lastTouchedWindow).LinkedNodesChance.Count >
+                   _dialogController.FindNodeByWindowID(_lastTouchedWindow).LinkedIds.Count)
+               {
+                   _dialogController.FindNodeByWindowID(_lastTouchedWindow).LinkedNodesChance.RemoveAt( _dialogController.FindNodeByWindowID(_lastTouchedWindow).LinkedNodesChance.Count);
+               }
+               while (_dialogController.FindNodeByWindowID(_lastTouchedWindow).LinkedNodesChance.Count <
+                      _dialogController.FindNodeByWindowID(_lastTouchedWindow).LinkedIds.Count)
+               {
+                   _dialogController.FindNodeByWindowID(_lastTouchedWindow).LinkedNodesChance.Add(10);
+               }
+               
+               for(int i = 0; i < _dialogController.FindNodeByWindowID(_lastTouchedWindow).LinkedNodesChance.Count; i++)
+               {
+                   GUI.Label(new Rect(position.width + 10 - _inspectorWidth/2 * ((i%2) + 1), 200 + ypos, _inspectorWidth/3, 30), 
+                       _dialogController.FindNodeByWindowID(_lastTouchedWindow).Title);
+                   
+               }
+           }
+           
+           
            // Method Info
-           GUI.Label(new Rect(position.width - _inspectorWidth + 10, 260, _inspectorWidth/2, 20),
+           GUI.Label(new Rect(position.width - _inspectorWidth + 10, 
+                   260 + ypos,
+                   _inspectorWidth/2, 20),
                "Method name");
            _dialogController.FindNodeByWindowID(_lastTouchedWindow).MethodName = GUI.TextField(
-                   new Rect(position.width - _inspectorWidth/2, 260, _inspectorWidth/2 - 10, 20),
+                   new Rect(position.width - _inspectorWidth/2, 260 + ypos, _inspectorWidth/2 - 10, 20),
                    _dialogController.FindNodeByWindowID(_lastTouchedWindow).MethodName);
-           GUI.Label(new Rect(position.width - _inspectorWidth/2, 278, _inspectorWidth/2 - 10, 40),
+           GUI.Label(new Rect(position.width - _inspectorWidth/2, 278 + ypos, _inspectorWidth/2 - 10, 40),
                "Leave blank if  there is no method to call after this line of dialog", 
                paragraph);
            
            // Arguments for method
            if (_dialogController.FindNodeByWindowID(_lastTouchedWindow).MethodName != "")
            {
-               GUI.Label(new Rect(position.width - _inspectorWidth + 10, 320, _inspectorWidth/2, 20),
+               GUI.Label(new Rect(position.width - _inspectorWidth + 10, 320 + ypos, _inspectorWidth/2, 20),
                    "Method arguments");
                _selectedArgumentType = EditorGUI.Popup(
-                   new Rect(position.width - _inspectorWidth/3 + 10, 322, _inspectorWidth / 3 - 30, 20),
+                   new Rect(position.width - _inspectorWidth/3 + 10,  322 + ypos,_inspectorWidth / 3 - 30, 20),
                    _selectedArgumentType, _argumentTypes);
                switch (_selectedArgumentType)
                {
                    case 0: // String
                        _argument = GUI.TextField(
-                           new Rect(position.width - 2 * _inspectorWidth / 3 + 30, 322, _inspectorWidth / 3 - 30, 20),
+                           new Rect(position.width - 2 * _inspectorWidth / 3 + 30, 322+ ypos, _inspectorWidth / 3 - 30, 20),
                            _argument.ToString());
                        break;
                    case 1: // Int
                        object oldValue = _argument;
                        bool isInt = int.TryParse(GUI.TextField(
-                           new Rect(position.width - 2 * _inspectorWidth / 3 + 30, 322, _inspectorWidth / 3 - 30, 20),
+                           new Rect(position.width - 2 * _inspectorWidth / 3 + 30, 322+ ypos, _inspectorWidth / 3 - 30, 20),
                            _argument.ToString()), out var newInt);
                        
                        _argument = isInt ? newInt : oldValue;
@@ -358,7 +367,7 @@ public class DialogWindow : EditorWindow
                    case 2: // Double
                        oldValue = _argument;
                        bool isDouble = Double.TryParse(GUI.TextField(
-                           new Rect(position.width - 2 * _inspectorWidth / 3 + 30, 322, _inspectorWidth / 3 - 30, 20),
+                           new Rect(position.width - 2 * _inspectorWidth / 3 + 30, 322+ ypos, _inspectorWidth / 3 - 30, 20),
                            _argument.ToString()), out var newDouble);
                        
                        _argument = isDouble ? newDouble : oldValue;
@@ -366,20 +375,20 @@ public class DialogWindow : EditorWindow
                    case 3: // Float
                        oldValue = _argument;
                        bool isFloat = float.TryParse(GUI.TextField(
-                           new Rect(position.width - 2 * _inspectorWidth / 3 + 30, 322, _inspectorWidth / 3 - 30, 20),
+                           new Rect(position.width - 2 * _inspectorWidth / 3 + 30, 322+ ypos, _inspectorWidth / 3 - 30, 20),
                            _argument.ToString()), out var newFloat);
                        
                        _argument = isFloat ? newFloat : oldValue;
                        break;
                    case 4: // Bool
                        _boolArgument = EditorGUI.Popup(
-                           new Rect(position.width - 2 * _inspectorWidth / 3 + 30, 322, _inspectorWidth / 3 - 30, 20),
+                           new Rect(position.width - 2 * _inspectorWidth / 3 + 30, 322+ ypos, _inspectorWidth / 3 - 30, 20),
                            _boolArgument, new[] {"False", "True"});
                        _argument = _boolArgument == 1;
                        break;
                }
 
-               if (GUI.Button(new Rect(position.width - _inspectorWidth + 10, 360, _inspectorWidth - 20, 30),
+               if (GUI.Button(new Rect(position.width - _inspectorWidth + 10, 360+ ypos, _inspectorWidth - 20, 30),
                    "Add argument"))
                {
                    _dialogController.FindNodeByWindowID(_lastTouchedWindow).MethodArguments.Add(_argument);
@@ -458,6 +467,7 @@ public class DialogWindow : EditorWindow
         Rect windowRect = _dialogController.FindNodeByWindowID(windowID).NodeRect;
         Rect firstButtonPos = new Rect(windowRect.x + windowRect.width, windowRect.y, 200, 50);
         
+        // Destroy node
         if (GUI.Button(new Rect(firstButtonPos.x, firstButtonPos.y - firstButtonPos.height,
             firstButtonPos.width, firstButtonPos.height), "Destroy node"))
         {
@@ -471,6 +481,7 @@ public class DialogWindow : EditorWindow
                 {
                     if (linkedId == windowID)
                     {
+                        node.LinkedNodesChance.ToList().RemoveAt(node.LinkedIds.IndexOf(windowID));
                         node.LinkedIds.Remove(windowID);
                         break;
                     }
