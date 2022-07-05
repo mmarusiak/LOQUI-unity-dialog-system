@@ -9,4 +9,4 @@ Easy tool that makes adding dialogs to the game simply as making sandwich!
 4. From your Unity Editor window with opened project go to "window" and open Dialog Window Editor (if is "grayed out" compile project by clicking play and repeat this step);
 5. Now you can select Game Object which player will talk with and create dialog;
 
-For tutorial about creating your first dialog please visit [*this file*](docs/FIRSTAPPROACH.md).
+For tutorial about creating your first dialog please visit [*docs file*](docs/FIRSTAPPROACH.md).
