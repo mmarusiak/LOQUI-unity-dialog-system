@@ -2,7 +2,7 @@
 Easy tool that makes adding dialogs to the game simply as making sandwich!
 
 
-# Installation and first "launch"
+# Installation and first usage
 1. Clone this repository;
 2. Move all files to your Unity assets directory of your projecy (or just to folder opened editor window);
 3. Make sure your game controller has tag "GameController" and add Dialog System Info to it;
