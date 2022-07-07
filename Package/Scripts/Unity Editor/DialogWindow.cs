@@ -50,6 +50,13 @@ public class DialogWindow : EditorWindow
 
     private void OnGUI()
     {
+        if (_dialogController == null && dialogActor != null)
+        {
+            _dialogController = dialogActor.GetComponent<DialogController>();
+        }
+        
+        _actorCreated = _dialogController != null;
+        
         if (_dialogSystemInfo == null)
         {
             try
@@ -125,6 +132,7 @@ public class DialogWindow : EditorWindow
             position.width - _inspectorWidth * Convert.ToInt32(_inspectorShown), 60), "ADD NODE"))
         {
             _creatingNode = !_creatingNode;
+            _customDropDownShown = false;
 
             if (_selectedNodeType >= 0 && _newNodeTitle != "" && _newNodeText != "")
             {
@@ -309,6 +317,9 @@ public class DialogWindow : EditorWindow
            int ypos = 60;
            if (_dialogController.FindNodeByWindowID(_lastTouchedWindow).LinkedIds.Count > 0)
            {
+               GUI.Label(new Rect(position.width - _inspectorWidth + 10, 265, _inspectorWidth - 15, 30), 
+                   "Select chance foreach of node \nconnected to: " + _dialogController.FindNodeByWindowID(_lastTouchedWindow).Title);
+               
                while (_dialogController.FindNodeByWindowID(_lastTouchedWindow).LinkedNodesChance.Count >
                    _dialogController.FindNodeByWindowID(_lastTouchedWindow).LinkedIds.Count)
                {
@@ -322,9 +333,30 @@ public class DialogWindow : EditorWindow
                
                for(int i = 0; i < _dialogController.FindNodeByWindowID(_lastTouchedWindow).LinkedNodesChance.Count; i++)
                {
-                   GUI.Label(new Rect(position.width + 10 - _inspectorWidth/2 * ((i%2) + 1), 200 + ypos, _inspectorWidth/3, 30), 
-                       _dialogController.FindNodeByWindowID(_lastTouchedWindow).Title);
-                   
+                   if (i % 2 == 0)
+                   {
+                       ypos += 60;
+                   }
+                   GUI.Label(new Rect(position.width + 10 - _inspectorWidth/2 * (i%2 + 1), 175 + ypos, _inspectorWidth/3, 30), 
+                       _dialogController.FindNodeByWindowID(_dialogController.FindNodeByWindowID(_lastTouchedWindow).LinkedIds[i]).Title);
+
+                   int.TryParse(GUI.TextField(new Rect(position.width + 10 - _inspectorWidth / 2 * (i % 2 + 1), 205 + ypos,
+                       _inspectorWidth / 3, 30), _dialogController.FindNodeByWindowID(_lastTouchedWindow).LinkedNodesChance[i].ToString()), 
+                       out var newChance);
+
+                   _dialogController.FindNodeByWindowID(_lastTouchedWindow).LinkedNodesChance[i] = newChance;
+
+
+
+                   /*percentHolder[i - 1] = GUI.TextField(
+                       new Rect(position.width + 10 - _inspectorWidth / 2 * (i % 2 + 1), 210 + ypos,
+                           _inspectorWidth / 3, 30),
+                       percentHolder[i]).Replace("%", "");
+                   bool isInt = Int32.TryParse(percentHolder[i], out var newPercent);
+
+                   _dialogController.FindNodeByWindowID(_lastTouchedWindow).LinkedNodesChance[i] = isInt
+                       ? newPercent
+                       : _dialogController.FindNodeByWindowID(_lastTouchedWindow).LinkedNodesChance[i];*/
                }
            }
            

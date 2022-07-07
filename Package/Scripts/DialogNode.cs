@@ -19,7 +19,7 @@ public class DialogNode
     public string MethodName = "";
     public List<object> MethodArguments = new List<object>();
 
-    public List<float> LinkedNodesChance = new List<float>();
+    public List<int> LinkedNodesChance = new List<int>();
 
     public List<int> LinkedIds = new List<int>();
 
