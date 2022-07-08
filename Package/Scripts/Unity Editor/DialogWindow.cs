@@ -153,7 +153,7 @@ public class DialogWindow : EditorWindow
                 new Rect(
                     position.width / 2 - _inspectorWidth * Convert.ToInt32(_inspectorShown)/2, 80, 
                     position.width / 2 - _inspectorWidth * Convert.ToInt32(_inspectorShown)/2, 40),
-                _newNodeTitle, 10);
+                _newNodeTitle, 20);
             
             // Text "box"
             GUI.Label(new Rect(0, 120, position.width, 40), 
@@ -162,7 +162,7 @@ public class DialogWindow : EditorWindow
                 new Rect(
                     position.width / 2 - _inspectorWidth * Convert.ToInt32(_inspectorShown)/2, 120,
                 position.width / 2 - _inspectorWidth * Convert.ToInt32(_inspectorShown)/2, 40),
-                _newNodeText, 40);
+                _newNodeText);
             
             // Dialog type popup
             GUI.Label(new Rect(0, 160, position.width, 40), 
@@ -278,7 +278,7 @@ public class DialogWindow : EditorWindow
             _dialogController.FindNodeByWindowID(_lastTouchedWindow).Title =
                 GUI.TextField(
                     new Rect(position.width - _inspectorWidth/2, 80, _inspectorWidth/2 - 10, 20),
-                    _dialogController.FindNodeByWindowID(_lastTouchedWindow).Title);
+                    _dialogController.FindNodeByWindowID(_lastTouchedWindow).Title, 20);
             
             // Text info
             GUI.Label(new Rect(position.width - _inspectorWidth + 10, 140, _inspectorWidth/2 - 20, 20),
@@ -314,17 +314,13 @@ public class DialogWindow : EditorWindow
            }
 
            // Percent chance
-           int ypos = 60;
-           if (_dialogController.FindNodeByWindowID(_lastTouchedWindow).LinkedIds.Count > 0)
+           int ypos = 0;
+           if (_dialogController.FindNodeByWindowID(_lastTouchedWindow).LinkedIds.Count > 1 & _dialogController.FindNodeByWindowID(_lastTouchedWindow).DialogNodeType == DialogNode.NodeType.PlayerNode)
            {
+               ypos = 60;
                GUI.Label(new Rect(position.width - _inspectorWidth + 10, 265, _inspectorWidth - 15, 30), 
                    "Select chance foreach of node \nconnected to: " + _dialogController.FindNodeByWindowID(_lastTouchedWindow).Title);
                
-               while (_dialogController.FindNodeByWindowID(_lastTouchedWindow).LinkedNodesChance.Count >
-                   _dialogController.FindNodeByWindowID(_lastTouchedWindow).LinkedIds.Count)
-               {
-                   _dialogController.FindNodeByWindowID(_lastTouchedWindow).LinkedNodesChance.RemoveAt( _dialogController.FindNodeByWindowID(_lastTouchedWindow).LinkedNodesChance.Count);
-               }
                while (_dialogController.FindNodeByWindowID(_lastTouchedWindow).LinkedNodesChance.Count <
                       _dialogController.FindNodeByWindowID(_lastTouchedWindow).LinkedIds.Count)
                {
@@ -345,18 +341,6 @@ public class DialogWindow : EditorWindow
                        out var newChance);
 
                    _dialogController.FindNodeByWindowID(_lastTouchedWindow).LinkedNodesChance[i] = newChance;
-
-
-
-                   /*percentHolder[i - 1] = GUI.TextField(
-                       new Rect(position.width + 10 - _inspectorWidth / 2 * (i % 2 + 1), 210 + ypos,
-                           _inspectorWidth / 3, 30),
-                       percentHolder[i]).Replace("%", "");
-                   bool isInt = Int32.TryParse(percentHolder[i], out var newPercent);
-
-                   _dialogController.FindNodeByWindowID(_lastTouchedWindow).LinkedNodesChance[i] = isInt
-                       ? newPercent
-                       : _dialogController.FindNodeByWindowID(_lastTouchedWindow).LinkedNodesChance[i];*/
                }
            }
            
@@ -513,7 +497,9 @@ public class DialogWindow : EditorWindow
                 {
                     if (linkedId == windowID)
                     {
-                        node.LinkedNodesChance.ToList().RemoveAt(node.LinkedIds.IndexOf(windowID));
+                        if(_dialogController.FindNodeByWindowID(linkedId).DialogNodeType == DialogNode.NodeType.AINode)
+                            node.LinkedNodesChance.ToList().RemoveAt(node.LinkedIds.IndexOf(windowID));
+                        
                         node.LinkedIds.Remove(windowID);
                         break;
                     }

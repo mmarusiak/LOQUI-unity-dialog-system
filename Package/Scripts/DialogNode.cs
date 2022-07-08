@@ -1,8 +1,7 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-[Serializable]
+//[System.Serializable]
 public class DialogNode
 {
     public enum NodeType
