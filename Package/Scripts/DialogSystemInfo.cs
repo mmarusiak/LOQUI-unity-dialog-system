@@ -27,6 +27,10 @@ public class DialogSystemInfo : MonoBehaviour
     public KeyCode ActivationKey = KeyCode.E;
     [Tooltip("Check true if your project is 3D or false if is 2D")]
     public bool Is3D = true;
+    [Tooltip("That shows the name of the AI and name of the player in dialog if checked")]
+    public bool ShowWhoIsSpeaking;
+    [Tooltip("If set on true player will be allowed to not wait until text will show letter by letter, after pressing the activation key the text will be just show immediately.")]
+    public bool IsTextDisplayEffectSkippable = true;
     
     [HideInInspector]
     public bool InDialog = false;

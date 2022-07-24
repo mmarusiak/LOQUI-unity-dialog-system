@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,6 +6,8 @@ public class DialogController : MonoBehaviour
     public List<DialogNode> DialogNodes = new List<DialogNode>(){};
     
     public float DialogActivationRange = 5f;
+    [Tooltip("Determines how fast (in seconds) next letters will appear on screen (formula: 1/value). If set on zero or less text will appear without any \"letters effect\".")]
+    public float TextDisplaySpeed;
     [HideInInspector]
     public DialogSystemInfo DialogSystemInfo;
     
