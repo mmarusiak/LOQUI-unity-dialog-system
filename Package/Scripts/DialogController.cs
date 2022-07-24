@@ -5,7 +5,9 @@ using UnityEngine;
 public class DialogController : MonoBehaviour
 {
     public List<DialogNode> DialogNodes = new List<DialogNode>(){};
+    
     public float DialogActivationRange = 5f;
+    [HideInInspector]
     public DialogSystemInfo DialogSystemInfo;
     
     void Start()
@@ -37,26 +39,34 @@ public class DialogController : MonoBehaviour
         if (DialogSystemInfo.Is3D)
         {
             bool isInRange =
-                Physics.OverlapSphere(transform.position, DialogActivationRange, DialogSystemInfo.PlayerMask).Length >
+                Physics.OverlapSphere(transform.position, DialogActivationRange, DialogSystemInfo.PlayerLayerMask).Length >
                 0;
             if (isInRange && Input.GetKeyDown(DialogSystemInfo.ActivationKey) && !DialogSystemInfo.InDialog)
             {
                 DialogSystemInfo.InDialog = true;
-                // Start Dialog
+                StartDialog();
             }
         }
         else
         {
             bool isInRange =
-                Physics2D.OverlapCircle(transform.position, DialogActivationRange, DialogSystemInfo.PlayerMask) != null;
+                Physics2D.OverlapCircle(transform.position, DialogActivationRange, DialogSystemInfo.PlayerLayerMask) != null;
             if (isInRange && Input.GetKeyDown(DialogSystemInfo.ActivationKey) && !DialogSystemInfo.InDialog)
             {
                 DialogSystemInfo.InDialog = true;
-                // Start Dialog
+                StartDialog();
             }
         }
     }
 
+    void StartDialog()
+    {
+        // Show UI with customizable boxes, fonts, buttons.
+        // Make UI interactive
+        // 
+    }
+    
+    
 
     public DialogNode FindNodeByWindowID(int windowID)
     {
