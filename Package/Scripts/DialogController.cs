@@ -93,10 +93,8 @@ public class DialogController : MonoBehaviour
             if (DialogSystemInfo.ShowWhoIsSpeaking)
             {
                 // set text to name of speaker
-                if (FindNodeByWindowID(currentNodeID).DialogNodeType == DialogNode.NodeType.PlayerNode)
-                    mainUIParent.transform.Find("ActorName").GetComponent<Text>().text = DialogSystemInfo.PlayerName;
-                else
-                    mainUIParent.transform.Find("ActorName").GetComponent<Text>().text = ActorName;
+                mainUIParent.transform.Find("ActorName").GetComponent<Text>().text = 
+                    FindNodeByWindowID(currentNodeID).DialogNodeType == DialogNode.NodeType.PlayerNode ? DialogSystemInfo.PlayerName : ActorName;
             }
             else
             {
