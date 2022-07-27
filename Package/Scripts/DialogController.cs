@@ -1,4 +1,6 @@
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -57,7 +59,7 @@ public class DialogController : MonoBehaviour
             if (isInRange && Input.GetKeyDown(DialogSystemInfo.DialogActionKey) && !DialogSystemInfo.InDialog)
             {
                 DialogSystemInfo.InDialog = true;
-                StartDialog();
+                NextNode();
             }
         }
         else
@@ -89,43 +91,62 @@ public class DialogController : MonoBehaviour
                 mainUIParent.transform.Find("DialogLineText").GetComponent<Text>().font = DialogSystemInfo.TextFont;
                 mainUIParent.transform.Find("ActorName").GetComponent<Text>().font = DialogSystemInfo.TextFont;
             }
-
-            if (DialogSystemInfo.ShowWhoIsSpeaking)
-            {
-                // set text to name of speaker
-                mainUIParent.transform.Find("ActorName").GetComponent<Text>().text = 
-                    FindNodeByWindowID(currentNodeID).DialogNodeType == DialogNode.NodeType.PlayerNode ? DialogSystemInfo.PlayerName : ActorName;
-            }
-            else
-            {
-                mainUIParent.transform.Find("ActorName").GetComponent<Text>().text = "";
-            }
-
             DialogSystemInfo.FirstRun = false;
         }
+        
+        mainUIParent.transform.position = Vector3.zero;
+        NextNode();
     }
     
-    
+    void NextNode()
+    {
+        if (TextDisplaySpeed > 0)
+        {
+            mainUIParent.transform.Find("DialogLineText").GetComponent<Text>().text = "";
+            IEnumerator coroutine = DisplayText(1/TextDisplaySpeed);
+            StartCoroutine(coroutine);
+        }
+        
+        if (DialogSystemInfo.ShowWhoIsSpeaking)
+        {
+            // set text to name of speaker
+            mainUIParent.transform.Find("ActorName").GetComponent<Text>().text = 
+                FindNodeByWindowID(currentNodeID).DialogNodeType == DialogNode.NodeType.PlayerNode ? DialogSystemInfo.PlayerName : ActorName;
+        }
+        else
+        {
+            mainUIParent.transform.Find("ActorName").GetComponent<Text>().text = "";
+        }
+
+        if (FindNodeByWindowID(currentNodeID).DialogNodeType == DialogNode.NodeType.AINode &&
+            FindNodeByWindowID(currentNodeID).LinkedIds.Count > 1)
+        {
+            // set choice buttons ......
+        }
+    }
+
+    private IEnumerator DisplayText(float waitTime)
+    {
+        foreach (char letter in FindNodeByWindowID(currentNodeID).Text)
+        {
+            mainUIParent.transform.Find("DialogLineText").GetComponent<Text>().text += letter;
+            yield return new WaitForSeconds(waitTime);
+        }
+    }
+
 
     public DialogNode FindNodeByWindowID(int windowID)
     {
-        foreach (var dialogNode in DialogNodes)
-        {
-            if (dialogNode.WindowID == windowID) 
-                return dialogNode;
-        }
-        return null;
+        return DialogNodes.FirstOrDefault(dialogNode => dialogNode.WindowID == windowID);
     }
 
     public void CallMethod(string methodName, params object[] arguments)
     {
         SendMessage("", "");
-        if (methodName != "")
-        {
-            if(arguments.Length > 0)
-                SendMessage(methodName, arguments);
-            else
-                SendMessage(methodName);    
-        }
+        if (methodName == "") return;
+        if(arguments.Length > 0)
+            SendMessage(methodName, arguments);
+        else
+            SendMessage(methodName);
     }
 }
