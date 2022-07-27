@@ -23,8 +23,9 @@ public class DialogSystemInfo : MonoBehaviour
     [SerializeField]
     [Tooltip("Select the layer that is on the player (you can find the layer mask in inspector - if player has no layer please add layer to player (preferred unique layer for player only))")]
     public LayerMask PlayerLayerMask;
-    [Tooltip("Select key for entering the dialog")]
-    public KeyCode ActivationKey = KeyCode.E;
+    [Tooltip("Select key for entering the dialog and playing next line of dialog")]
+    public KeyCode DialogActionKey = KeyCode.E;
+    public Image ActionKetyGraphic;
     [Tooltip("Check true if your project is 3D or false if is 2D")]
     public bool Is3D = true;
     [Tooltip("That shows the name of the AI and name of the player in dialog if checked")]

@@ -42,7 +42,7 @@ public class DialogController : MonoBehaviour
             bool isInRange =
                 Physics.OverlapSphere(transform.position, DialogActivationRange, DialogSystemInfo.PlayerLayerMask).Length >
                 0;
-            if (isInRange && Input.GetKeyDown(DialogSystemInfo.ActivationKey) && !DialogSystemInfo.InDialog)
+            if (isInRange && Input.GetKeyDown(DialogSystemInfo.DialogActionKey) && !DialogSystemInfo.InDialog)
             {
                 DialogSystemInfo.InDialog = true;
                 StartDialog();
@@ -52,7 +52,7 @@ public class DialogController : MonoBehaviour
         {
             bool isInRange =
                 Physics2D.OverlapCircle(transform.position, DialogActivationRange, DialogSystemInfo.PlayerLayerMask) != null;
-            if (isInRange && Input.GetKeyDown(DialogSystemInfo.ActivationKey) && !DialogSystemInfo.InDialog)
+            if (isInRange && Input.GetKeyDown(DialogSystemInfo.DialogActionKey) && !DialogSystemInfo.InDialog)
             {
                 DialogSystemInfo.InDialog = true;
                 StartDialog();
@@ -62,9 +62,7 @@ public class DialogController : MonoBehaviour
 
     void StartDialog()
     {
-        // Show UI with customizable boxes, fonts, buttons.
-        // Make UI interactive
-        // 
+        
     }
     
     
