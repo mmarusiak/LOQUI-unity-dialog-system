@@ -12,20 +12,23 @@ public class DialogSystemInfo : MonoBehaviour
     [Space(10)]
     [Header("Dialog appearance")]
     [Tooltip("Player choice button background - look of button graphics")]
-    public Image ButtonBackground;
+    public Sprite ButtonBackground;
     [Tooltip("Background for somebody' line that is displayed")]
-    public Image DialogLineBackground;
+    public Sprite DialogLineBackground;
     public Font TextFont;
     public float FontSize;
-    
+
     [Space(10)]
     [Header("Project info")]
     [SerializeField]
+    [Tooltip(
+        "Provide player's name that will be displayed on dialog (only if show speaker's name option is set to true)")]
+    public string PlayerName = "You";
     [Tooltip("Select the layer that is on the player (you can find the layer mask in inspector - if player has no layer please add layer to player (preferred unique layer for player only))")]
     public LayerMask PlayerLayerMask;
     [Tooltip("Select key for entering the dialog and playing next line of dialog")]
     public KeyCode DialogActionKey = KeyCode.E;
-    public Image ActionKetyGraphic;
+    public Image ActionKeyGraphic;
     [Tooltip("Check true if your project is 3D or false if is 2D")]
     public bool Is3D = true;
     [Tooltip("That shows the name of the AI and name of the player in dialog if checked")]
@@ -35,5 +38,8 @@ public class DialogSystemInfo : MonoBehaviour
     
     [HideInInspector]
     public bool InDialog = false;
+
+    [HideInInspector] 
+    public bool FirstRun = true;
 
 }

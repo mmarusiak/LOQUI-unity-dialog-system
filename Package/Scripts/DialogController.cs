@@ -1,19 +1,31 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class DialogController : MonoBehaviour
 {
     public List<DialogNode> DialogNodes = new List<DialogNode>(){};
-    
+    private int currentNodeID;
+
+    [Tooltip("Provide actor's name that will be displayed on dialog (only if show speaker's name option is set to true)")]
+    public string ActorName = "Bobby bob";
     public float DialogActivationRange = 5f;
     [Tooltip("Determines how fast (in seconds) next letters will appear on screen (formula: 1/value). If set on zero or less text will appear without any \"letters effect\".")]
     public float TextDisplaySpeed;
     [HideInInspector]
     public DialogSystemInfo DialogSystemInfo;
+
+    private GameObject mainUIParent;
+    private GameObject choiceUIParent;
     
     void Start()
     {
         DialogSystemInfo = GameObject.FindWithTag("GameController").GetComponent<DialogSystemInfo>();
+     
+        mainUIParent = GameObject.Find("MainDialog");
+        choiceUIParent = GameObject.Find("PlayerChoiceButtons");
+
+        currentNodeID = DialogNodes[0].WindowID;
         
         foreach (DialogNode node in DialogNodes)
         {
@@ -62,7 +74,37 @@ public class DialogController : MonoBehaviour
 
     void StartDialog()
     {
-        
+        // set appearance of the dialog UI to what the user set
+        if (DialogSystemInfo.FirstRun)
+        {
+            if (DialogSystemInfo.DialogLineBackground != null)
+            {
+                // set correct image
+                mainUIParent.transform.Find("DialogLineBackground").GetComponent<Image>().sprite = DialogSystemInfo.DialogLineBackground;
+            }
+            
+            if (DialogSystemInfo.TextFont != null)
+            {
+                // set correct font
+                mainUIParent.transform.Find("DialogLineText").GetComponent<Text>().font = DialogSystemInfo.TextFont;
+                mainUIParent.transform.Find("ActorName").GetComponent<Text>().font = DialogSystemInfo.TextFont;
+            }
+
+            if (DialogSystemInfo.ShowWhoIsSpeaking)
+            {
+                // set text to name of speaker
+                if (FindNodeByWindowID(currentNodeID).DialogNodeType == DialogNode.NodeType.PlayerNode)
+                    mainUIParent.transform.Find("ActorName").GetComponent<Text>().text = DialogSystemInfo.PlayerName;
+                else
+                    mainUIParent.transform.Find("ActorName").GetComponent<Text>().text = ActorName;
+            }
+            else
+            {
+                mainUIParent.transform.Find("ActorName").GetComponent<Text>().text = "";
+            }
+
+            DialogSystemInfo.FirstRun = false;
+        }
     }
     
     
