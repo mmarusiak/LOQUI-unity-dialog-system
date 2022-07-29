@@ -142,6 +142,7 @@ public class DialogController : MonoBehaviour
                 mainUIParent.transform.position = new Vector2(1000,1000);
                 choiceUIParent .transform.position = new Vector2(2000,1000);
                 DialogSystemInfo.InDialog = false;
+                inThisDialog = false;
             }
         }
     }
@@ -241,11 +242,11 @@ public class DialogController : MonoBehaviour
     }
 
     // choice button on click function
-    void MakeChoice(int nextID)
+    void MakeChoice(int buttonID)
     {
         // TO DO: destroy current set of buttons
         CallMethod(FindNodeByWindowID(currentNodeID).MethodName, FindNodeByWindowID(currentNodeID).MethodArguments);
-        currentNodeID = nextID;
+        currentNodeID = buttonID;
         NextNode();
     }
     
