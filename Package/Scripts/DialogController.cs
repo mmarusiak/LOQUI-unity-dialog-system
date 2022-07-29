@@ -87,7 +87,10 @@ public class DialogController : MonoBehaviour
             }
         }
 
-        if (Input.GetKeyDown(DialogSystemInfo.DialogActionKey) && inThisDialog)
+        // input only works when choice buttons are not shown
+        if (Input.GetKeyDown(DialogSystemInfo.DialogActionKey) && inThisDialog &&
+            (FindNodeByWindowID(currentNodeID).LinkedIds.Count <= 1 || 
+             FindNodeByWindowID(currentNodeID).DialogNodeType != DialogNode.NodeType.AINode))
         {
             
             // skip text display effect
