@@ -33,9 +33,16 @@ public class DialogController : MonoBehaviour
         mainUIParent = GameObject.Find("MainDialog");
         // parent of Game Objects (UI) that "belongs" to choice system
         choiceUIParent = GameObject.Find("PlayerChoiceButtons");
-        
-        currentNodeID = DialogNodes[0].WindowID;
-        
+
+        try { currentNodeID = DialogNodes[0].WindowID; }
+        catch
+        {
+            currentNodeID = 0;
+            Debug.LogWarning("[DIALOG WARNING] Dialog on actor not created");
+            interactable = false;
+            inThisDialog = false;
+        }
+
         foreach (DialogNode node in DialogNodes)
         {
             if (node.LinkedNodesChance.Count > 0)
