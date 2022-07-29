@@ -19,6 +19,7 @@ public class DialogController : MonoBehaviour
 
     private GameObject mainUIParent;
     private GameObject choiceUIParent;
+    private bool textShown = false;
     
     void Start()
     {
@@ -72,6 +73,54 @@ public class DialogController : MonoBehaviour
                 StartDialog();
             }
         }
+
+        if (Input.GetKeyDown(DialogSystemInfo.DialogActionKey))
+        {
+            
+            // skip text display effect
+            if (DialogSystemInfo.IsTextDisplayEffectSkippable && !textShown)
+            {
+                textShown = true;
+            }
+            
+            else
+            {
+
+                // one ai answer, not random, just single
+                if (textShown &&
+                    FindNodeByWindowID(currentNodeID).LinkedIds.Count == 1)
+                {
+                    currentNodeID = FindNodeByWindowID(currentNodeID).LinkedIds[0];
+                    NextNode();
+                }
+
+                // random ai answer if more than one
+                else if (textShown &&
+                         (FindNodeByWindowID(currentNodeID).DialogNodeType != DialogNode.NodeType.AINode &&
+                          FindNodeByWindowID(currentNodeID).LinkedIds.Count > 1))
+                {
+                    float random = Random.Range(0, 100);
+                    float percents = 0;
+
+                    for (int i = 0; i < FindNodeByWindowID(currentNodeID).LinkedNodesChance.Count; i++)
+                    {
+                        if (i == 0 && random == 0)
+                        {
+                            currentNodeID = FindNodeByWindowID(currentNodeID).LinkedIds[i];
+                            NextNode();
+                            return;
+                        }
+
+                        if (i > percents && i <= FindNodeByWindowID(currentNodeID).LinkedNodesChance[i])
+                        {
+                            currentNodeID = FindNodeByWindowID(currentNodeID).LinkedIds[i];
+                            NextNode();
+                            return;
+                        }
+                    }
+                }
+            }
+        }
     }
 
     void StartDialog()
@@ -100,40 +149,82 @@ public class DialogController : MonoBehaviour
     
     void NextNode()
     {
+        // if display effect is set, then play it
         if (TextDisplaySpeed > 0)
         {
             mainUIParent.transform.Find("DialogLineText").GetComponent<Text>().text = "";
             IEnumerator coroutine = DisplayText(1/TextDisplaySpeed);
+            textShown = false;
             StartCoroutine(coroutine);
         }
         
+        // just show who is speaking, show player's name (set in inspector DialogSystemInfo) or AI' name (DialogController)
         if (DialogSystemInfo.ShowWhoIsSpeaking)
         {
             // set text to name of speaker
             mainUIParent.transform.Find("ActorName").GetComponent<Text>().text = 
                 FindNodeByWindowID(currentNodeID).DialogNodeType == DialogNode.NodeType.PlayerNode ? DialogSystemInfo.PlayerName : ActorName;
         }
+        // clear text if option not checked
         else
         {
             mainUIParent.transform.Find("ActorName").GetComponent<Text>().text = "";
         }
-
+        
+        // set choice options buttons
         if (FindNodeByWindowID(currentNodeID).DialogNodeType == DialogNode.NodeType.AINode &&
             FindNodeByWindowID(currentNodeID).LinkedIds.Count > 1)
         {
-            // set choice buttons ......
+            // find correct buttons holder - buttons holders exist in combinations that are different
+            // by number of buttons and are named just by number of buttons
+            // (they are empty Game Objects)
+            GameObject buttonsHolder =
+                choiceUIParent.transform.Find(FindNodeByWindowID(currentNodeID).LinkedIds.Count.ToString()).gameObject;
+            // creating button for each of linked node with correct appearance,
+            // function and function arguments
+            for (int i = 0; i < FindNodeByWindowID(currentNodeID).LinkedIds.Count; i++)
+            {
+                var newButton = DefaultControls.CreateButton(new DefaultControls.Resources());
+                newButton.transform.SetParent(GameObject.Find("Canvas").transform, false);
+                newButton.transform.position = buttonsHolder.transform.Find(i.ToString()).position;
+                
+                if (DialogSystemInfo.ButtonBackground != null)
+                    newButton.GetComponent<Image>().sprite = DialogSystemInfo.ButtonBackground;
+
+                newButton.transform.GetChild(0).GetComponent<Text>().text =
+                    FindNodeByWindowID(FindNodeByWindowID(currentNodeID).LinkedIds[i]).Title;
+
+                newButton.GetComponent<Button>().onClick.AddListener(() =>
+                {
+                    MakeChoice(FindNodeByWindowID(currentNodeID).LinkedIds[i]);
+                });
+            }
         }
     }
 
+    
     private IEnumerator DisplayText(float waitTime)
     {
-        foreach (char letter in FindNodeByWindowID(currentNodeID).Text)
+        foreach (char letter in FindNodeByWindowID(currentNodeID).Text) 
         {
-            mainUIParent.transform.Find("DialogLineText").GetComponent<Text>().text += letter;
-            yield return new WaitForSeconds(waitTime);
+            if (!textShown)
+            {
+                mainUIParent.transform.Find("DialogLineText").GetComponent<Text>().text += letter;
+                yield return new WaitForSeconds(waitTime);
+            }
         }
+
+        textShown = true;
     }
 
+
+    void MakeChoice(int nextID)
+    {
+        // TO DO: destroy current set of buttons
+        CallMethod(FindNodeByWindowID(currentNodeID).MethodName, FindNodeByWindowID(currentNodeID).MethodArguments);
+        currentNodeID = nextID;
+        NextNode();
+    }
 
     public DialogNode FindNodeByWindowID(int windowID)
     {

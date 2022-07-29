@@ -35,6 +35,8 @@ public class DialogSystemInfo : MonoBehaviour
     public bool ShowWhoIsSpeaking;
     [Tooltip("If set on true player will be allowed to not wait until text will show letter by letter, after pressing the activation key the text will be just show immediately.")]
     public bool IsTextDisplayEffectSkippable = true;
+
+    public GameObject ChoiceButton;
     
     [HideInInspector]
     public bool InDialog = false;
