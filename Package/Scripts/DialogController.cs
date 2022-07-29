@@ -14,20 +14,26 @@ public class DialogController : MonoBehaviour
     public float DialogActivationRange = 5f;
     [Tooltip("Determines how fast (in seconds) next letters will appear on screen (formula: 1/value). If set on zero or less text will appear without any \"letters effect\".")]
     public float TextDisplaySpeed;
+    [Tooltip("If you want to \"talk\" with AI multiple times (the same dialog that you set) you should set it to true")]
+    public bool MultipleInteractions = true;
+    
     [HideInInspector]
     public DialogSystemInfo DialogSystemInfo;
 
     private GameObject mainUIParent;
     private GameObject choiceUIParent;
     private bool textShown = false;
-    
+    private bool inThisDialog = false;
+    private bool interactable = true;
     void Start()
     {
         DialogSystemInfo = GameObject.FindWithTag("GameController").GetComponent<DialogSystemInfo>();
      
+        // parent of Game Objects (UI) that doesn't "belong" to choice system
         mainUIParent = GameObject.Find("MainDialog");
+        // parent of Game Objects (UI) that "belongs" to choice system
         choiceUIParent = GameObject.Find("PlayerChoiceButtons");
-
+        
         currentNodeID = DialogNodes[0].WindowID;
         
         foreach (DialogNode node in DialogNodes)
@@ -52,29 +58,36 @@ public class DialogController : MonoBehaviour
 
     void Update()
     {
-        if (DialogSystemInfo.Is3D)
+        if (interactable)
         {
-            bool isInRange =
-                Physics.OverlapSphere(transform.position, DialogActivationRange, DialogSystemInfo.PlayerLayerMask).Length >
-                0;
-            if (isInRange && Input.GetKeyDown(DialogSystemInfo.DialogActionKey) && !DialogSystemInfo.InDialog)
+            if (DialogSystemInfo.Is3D)
             {
-                DialogSystemInfo.InDialog = true;
-                NextNode();
+                bool isInRange =
+                    Physics.OverlapSphere(transform.position, DialogActivationRange, DialogSystemInfo.PlayerLayerMask)
+                        .Length >
+                    0;
+                if (isInRange && Input.GetKeyDown(DialogSystemInfo.DialogActionKey) && !DialogSystemInfo.InDialog)
+                {
+                    DialogSystemInfo.InDialog = true;
+                    StartDialog();
+                    inThisDialog = true;
+                }
             }
-        }
-        else
-        {
-            bool isInRange =
-                Physics2D.OverlapCircle(transform.position, DialogActivationRange, DialogSystemInfo.PlayerLayerMask) != null;
-            if (isInRange && Input.GetKeyDown(DialogSystemInfo.DialogActionKey) && !DialogSystemInfo.InDialog)
+            else
             {
-                DialogSystemInfo.InDialog = true;
-                StartDialog();
+                bool isInRange =
+                    Physics2D.OverlapCircle(transform.position, DialogActivationRange,
+                        DialogSystemInfo.PlayerLayerMask) != null;
+                if (isInRange && Input.GetKeyDown(DialogSystemInfo.DialogActionKey) && !DialogSystemInfo.InDialog)
+                {
+                    DialogSystemInfo.InDialog = true;
+                    StartDialog();
+                    inThisDialog = true;
+                }
             }
         }
 
-        if (Input.GetKeyDown(DialogSystemInfo.DialogActionKey))
+        if (Input.GetKeyDown(DialogSystemInfo.DialogActionKey) && inThisDialog)
         {
             
             // skip text display effect
@@ -96,8 +109,8 @@ public class DialogController : MonoBehaviour
 
                 // random ai answer if more than one
                 else if (textShown &&
-                         (FindNodeByWindowID(currentNodeID).DialogNodeType != DialogNode.NodeType.AINode &&
-                          FindNodeByWindowID(currentNodeID).LinkedIds.Count > 1))
+                         FindNodeByWindowID(currentNodeID).DialogNodeType != DialogNode.NodeType.AINode &&
+                          FindNodeByWindowID(currentNodeID).LinkedIds.Count > 1)
                 {
                     float random = Random.Range(0, 100);
                     float percents = 0;
@@ -119,6 +132,16 @@ public class DialogController : MonoBehaviour
                         }
                     }
                 }
+            }
+            
+            // if no more linked ids, then end the dialog
+            if (FindNodeByWindowID(currentNodeID).LinkedIds.Count < 1)
+            {
+                if (!MultipleInteractions)
+                    interactable = false;
+                mainUIParent.transform.position = new Vector2(1000,1000);
+                choiceUIParent .transform.position = new Vector2(2000,1000);
+                DialogSystemInfo.InDialog = false;
             }
         }
     }
@@ -202,7 +225,7 @@ public class DialogController : MonoBehaviour
         }
     }
 
-    
+    // Display text effect, works only if text isn't shown, text is shown if it finished, or if action key is pressed and skip display effect
     private IEnumerator DisplayText(float waitTime)
     {
         foreach (char letter in FindNodeByWindowID(currentNodeID).Text) 
@@ -217,7 +240,7 @@ public class DialogController : MonoBehaviour
         textShown = true;
     }
 
-
+    // choice button on click function
     void MakeChoice(int nextID)
     {
         // TO DO: destroy current set of buttons
@@ -225,7 +248,7 @@ public class DialogController : MonoBehaviour
         currentNodeID = nextID;
         NextNode();
     }
-
+    
     public DialogNode FindNodeByWindowID(int windowID)
     {
         return DialogNodes.FirstOrDefault(dialogNode => dialogNode.WindowID == windowID);
@@ -233,7 +256,6 @@ public class DialogController : MonoBehaviour
 
     public void CallMethod(string methodName, params object[] arguments)
     {
-        SendMessage("", "");
         if (methodName == "") return;
         if(arguments.Length > 0)
             SendMessage(methodName, arguments);
