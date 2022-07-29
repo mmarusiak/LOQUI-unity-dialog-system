@@ -199,6 +199,7 @@ public class DialogController : MonoBehaviour
         if (FindNodeByWindowID(currentNodeID).DialogNodeType == DialogNode.NodeType.AINode &&
             FindNodeByWindowID(currentNodeID).LinkedIds.Count > 1)
         {
+            choiceUIParent.transform.position = Vector3.zero;
             // find correct buttons holder - buttons holders exist in combinations that are different
             // by number of buttons and are named just by number of buttons
             // (they are empty Game Objects)
@@ -245,6 +246,7 @@ public class DialogController : MonoBehaviour
     void MakeChoice(int buttonID)
     {
         // TO DO: destroy current set of buttons
+        choiceUIParent.transform.position = new Vector2(2000, 1000);
         CallMethod(FindNodeByWindowID(currentNodeID).MethodName, FindNodeByWindowID(currentNodeID).MethodArguments);
         currentNodeID = buttonID;
         NextNode();
