@@ -1,9 +1,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-//[System.Serializable]
+[System.Serializable]
 public class DialogNode
 {
+    [System.Serializable]
     public enum NodeType
     {
         AINode,

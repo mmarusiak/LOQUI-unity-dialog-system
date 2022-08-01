@@ -75,6 +75,7 @@ public class DialogController : MonoBehaviour
                     0;
                 if (isInRange && Input.GetKeyDown(DialogSystemInfo.DialogActionKey) && !DialogSystemInfo.InDialog)
                 {
+                    Debug.Log("ADSAD");
                     DialogSystemInfo.InDialog = true;
                     StartDialog();
                     inThisDialog = true;
@@ -87,6 +88,7 @@ public class DialogController : MonoBehaviour
                         DialogSystemInfo.PlayerLayerMask) != null;
                 if (isInRange && Input.GetKeyDown(DialogSystemInfo.DialogActionKey) && !DialogSystemInfo.InDialog)
                 {
+                    Debug.Log("aAA");
                     DialogSystemInfo.InDialog = true;
                     StartDialog();
                     inThisDialog = true;
@@ -177,7 +179,7 @@ public class DialogController : MonoBehaviour
             DialogSystemInfo.FirstRun = false;
         }
         
-        mainUIParent.transform.position = Vector3.zero;
+        mainUIParent.transform.position = new Vector3(0,0,0);
         NextNode();
     }
     
