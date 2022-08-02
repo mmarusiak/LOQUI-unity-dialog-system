@@ -7,6 +7,7 @@ using UnityEngine.UI;
 public class DialogController : MonoBehaviour
 {
     public List<DialogNode> DialogNodes = new List<DialogNode>(){};
+    private List<NodeConnection> _connections = new List<NodeConnection>();
     private int currentNodeID;
 
     [Tooltip("Provide actor's name that will be displayed on dialog (only if show speaker's name option is set to true)")]
@@ -25,6 +26,24 @@ public class DialogController : MonoBehaviour
     private bool textShown = false;
     private bool inThisDialog = false;
     private bool interactable = true;
+
+    
+    // if isConnected is false and isLinked is true, then it's the start node
+    // also easy to catch end node with that class - isConnected true and isLinked false - but there can exist many end points in dialog
+    public class NodeConnection
+    {
+        // is some node connected/linked TO THIS NODE?
+        public bool isConnected;
+        // is THIS NODE connected/linked to some node?
+        public bool isLinked;
+        public int windowID;
+        public NodeConnection(bool _isConnected, bool _isLinked, int _windowID)
+        {
+            isConnected = _isConnected;
+            isLinked = _isLinked;
+            windowID = _windowID;
+        }
+    }
     void Start()
     {
         DialogSystemInfo = GameObject.FindWithTag("GameController").GetComponent<DialogSystemInfo>();
@@ -34,7 +53,32 @@ public class DialogController : MonoBehaviour
         // parent of Game Objects (UI) that "belongs" to choice system
         choiceUIParent = GameObject.Find("PlayerChoiceButtons");
 
-        try { currentNodeID = DialogNodes[0].WindowID; }
+        // get windowID of first node in dialog
+        try
+        {
+            foreach (var node in DialogNodes)
+            {
+                bool isConnected = false;
+                bool isLinked = node.LinkedIds.Count > 0;
+                foreach (var parentNode in DialogNodes)
+                {
+                    if (parentNode.LinkedIds.Contains(node.WindowID))
+                    {
+                        isConnected = true;
+                        break;
+                    }
+                }
+                _connections.Add(new NodeConnection(isConnected, isLinked, node.WindowID));
+            }
+
+            foreach (var connection in _connections)
+            {
+                if (!connection.isConnected && connection.isLinked)
+                {
+                    currentNodeID = connection.windowID;
+                }
+            }
+        }
         catch
         {
             currentNodeID = 0;
@@ -142,6 +186,8 @@ public class DialogController : MonoBehaviour
                             NextNode();
                             return;
                         }
+
+                        percents += FindNodeByWindowID(currentNodeID).LinkedNodesChance[i];
                     }
                 }
             }
@@ -151,8 +197,8 @@ public class DialogController : MonoBehaviour
             {
                 if (!MultipleInteractions)
                     interactable = false;
-                mainUIParent.transform.position = new Vector2(1000,1000);
-                choiceUIParent .transform.position = new Vector2(2000,1000);
+                mainUIParent.GetComponent<RectTransform>().anchoredPosition = new Vector2(1000,1000);
+                choiceUIParent.GetComponent<RectTransform>().anchoredPosition = new Vector2(2000,1000);
                 DialogSystemInfo.InDialog = false;
                 inThisDialog = false;
             }
@@ -167,19 +213,19 @@ public class DialogController : MonoBehaviour
             if (DialogSystemInfo.DialogLineBackground != null)
             {
                 // set correct image
-                mainUIParent.transform.Find("DialogLineBackground").GetComponent<Image>().sprite = DialogSystemInfo.DialogLineBackground;
+                mainUIParent.GetComponent<RectTransform>().Find("DialogLineBackground").GetComponent<Image>().sprite = DialogSystemInfo.DialogLineBackground;
             }
             
             if (DialogSystemInfo.TextFont != null)
             {
                 // set correct font
-                mainUIParent.transform.Find("DialogLineText").GetComponent<Text>().font = DialogSystemInfo.TextFont;
-                mainUIParent.transform.Find("ActorName").GetComponent<Text>().font = DialogSystemInfo.TextFont;
+                mainUIParent.GetComponent<RectTransform>().Find("DialogLineText").GetComponent<Text>().font = DialogSystemInfo.TextFont;
+                mainUIParent.GetComponent<RectTransform>().Find("ActorName").GetComponent<Text>().font = DialogSystemInfo.TextFont;
             }
             DialogSystemInfo.FirstRun = false;
         }
         
-        mainUIParent.transform.position = new Vector3(0,0,0);
+        mainUIParent.GetComponent<RectTransform>().anchoredPosition = Vector3.zero; 
         NextNode();
     }
     
@@ -188,7 +234,7 @@ public class DialogController : MonoBehaviour
         // if display effect is set, then play it
         if (TextDisplaySpeed > 0)
         {
-            mainUIParent.transform.Find("DialogLineText").GetComponent<Text>().text = "";
+            mainUIParent.GetComponent<RectTransform>().Find("DialogLineText").GetComponent<Text>().text = "";
             IEnumerator coroutine = DisplayText(1/TextDisplaySpeed);
             textShown = false;
             StartCoroutine(coroutine);
@@ -198,25 +244,25 @@ public class DialogController : MonoBehaviour
         if (DialogSystemInfo.ShowWhoIsSpeaking)
         {
             // set text to name of speaker
-            mainUIParent.transform.Find("ActorName").GetComponent<Text>().text = 
+            mainUIParent.GetComponent<RectTransform>().Find("ActorName").GetComponent<Text>().text = 
                 FindNodeByWindowID(currentNodeID).DialogNodeType == DialogNode.NodeType.PlayerNode ? DialogSystemInfo.PlayerName : ActorName;
         }
         // clear text if option not checked
         else
         {
-            mainUIParent.transform.Find("ActorName").GetComponent<Text>().text = "";
+            mainUIParent.GetComponent<RectTransform>().Find("ActorName").GetComponent<Text>().text = "";
         }
         
         // set choice options buttons
         if (FindNodeByWindowID(currentNodeID).DialogNodeType == DialogNode.NodeType.AINode &&
             FindNodeByWindowID(currentNodeID).LinkedIds.Count > 1)
         {
-            choiceUIParent.transform.position = Vector3.zero;
+            choiceUIParent.GetComponent<RectTransform>().position = Vector3.zero;
             // find correct buttons holder - buttons holders exist in combinations that are different
             // by number of buttons and are named just by number of buttons
             // (they are empty Game Objects)
             GameObject buttonsHolder =
-                choiceUIParent.transform.Find(FindNodeByWindowID(currentNodeID).LinkedIds.Count.ToString()).gameObject;
+                choiceUIParent.GetComponent<RectTransform>().Find(FindNodeByWindowID(currentNodeID).LinkedIds.Count.ToString()).gameObject;
             // creating button for each of linked node with correct appearance,
             // function and function arguments
             for (int i = 0; i < FindNodeByWindowID(currentNodeID).LinkedIds.Count; i++)
