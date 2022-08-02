@@ -364,7 +364,7 @@ MonoBehaviour:
   ActionKeyGraphic: {fileID: 0}
   Is3D: 1
   ShowWhoIsSpeaking: 1
-  IsTextDisplayEffectSkippable: 1
+  IsTextDisplayEffectSkippable: 0
   ChoiceButton: {fileID: 0}
   InDialog: 0
   FirstRun: 1
@@ -601,13 +601,27 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   DialogNodes:
-  - Title: dupka
-    Text: dsds
+  - Title: Start of the dialog
+    Text: Hello! Do you know any way back to New Orlean?
     WindowID: 0
     NodeRect:
       serializedVersion: 2
-      x: 806
-      y: 640.5
+      x: 195
+      y: 249
+      width: 100
+      height: 100
+    DialogNodeType: 1
+    DialogTextAudio: {fileID: 0}
+    MethodName: 
+    LinkedNodesChance: 4b00000019000000
+    LinkedIds: 0200000001000000
+  - Title: AI 1.1
+    Text: No, go away man
+    WindowID: 1
+    NodeRect:
+      serializedVersion: 2
+      x: 3
+      y: 405
       width: 100
       height: 100
     DialogNodeType: 0
@@ -615,23 +629,66 @@ MonoBehaviour:
     MethodName: 
     LinkedNodesChance: 
     LinkedIds: 
-  - Title: sraka
-    Text: asdad
-    WindowID: 1
+  - Title: AI 1.2
+    Text: Yes, you need to go right and left and right and then left, left, left,
+      left
+    WindowID: 2
     NodeRect:
       serializedVersion: 2
-      x: 647
-      y: 313.5
+      x: 297
+      y: 384
+      width: 100
+      height: 100
+    DialogNodeType: 0
+    DialogTextAudio: {fileID: 0}
+    MethodName: 
+    LinkedNodesChance: 
+    LinkedIds: 0300000004000000
+  - Title: Wholesome thanking
+    Text: Thanks man thanks thanks thanks
+    WindowID: 3
+    NodeRect:
+      serializedVersion: 2
+      x: 206
+      y: 525
       width: 100
       height: 100
     DialogNodeType: 1
     DialogTextAudio: {fileID: 0}
     MethodName: 
     LinkedNodesChance: 
-    LinkedIds: 00000000
+    LinkedIds: 
+  - Title: Map
+    Text: Do you have a map or gps?
+    WindowID: 4
+    NodeRect:
+      serializedVersion: 2
+      x: 408
+      y: 524
+      width: 100
+      height: 100
+    DialogNodeType: 1
+    DialogTextAudio: {fileID: 0}
+    MethodName: 
+    LinkedNodesChance: 
+    LinkedIds: 05000000
+  - Title: No map
+    Text: I don't have a map...
+    WindowID: 5
+    NodeRect:
+      serializedVersion: 2
+      x: 488
+      y: 672.5
+      width: 100
+      height: 100
+    DialogNodeType: 0
+    DialogTextAudio: {fileID: 0}
+    MethodName: 
+    LinkedNodesChance: 
+    LinkedIds: 
   ActorName: Bobby bob
   DialogActivationRange: 20
-  TextDisplaySpeed: 0
+  TextDisplaySpeed: 100
   MultipleInteractions: 1
   DialogSystemInfo: {fileID: 0}
 --- !u!65 &1379098349

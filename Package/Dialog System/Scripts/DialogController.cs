@@ -152,17 +152,15 @@ public class DialogController : MonoBehaviour
             {
                 Debug.Log("Here");
                 // one ai answer, not random, just single
-                if (textShown &&
-                    FindNodeByWindowID(currentNodeID).LinkedIds.Count == 1)
+                if (FindNodeByWindowID(currentNodeID).LinkedIds.Count == 1)
                 {
                     currentNodeID = FindNodeByWindowID(currentNodeID).LinkedIds[0];
                     NextNode();
                 }
 
                 // random ai answer if more than one
-                else if (textShown &&
-                         FindNodeByWindowID(currentNodeID).DialogNodeType != DialogNode.NodeType.AINode &&
-                          FindNodeByWindowID(currentNodeID).LinkedIds.Count > 1)
+                else if (FindNodeByWindowID(currentNodeID).DialogNodeType != DialogNode.NodeType.AINode &&
+                         FindNodeByWindowID(currentNodeID).LinkedIds.Count > 1)
                 {
                     float random = Random.Range(0, 100);
                     float percents = 0;
@@ -186,17 +184,17 @@ public class DialogController : MonoBehaviour
                         percents += FindNodeByWindowID(currentNodeID).LinkedNodesChance[i];
                     }
                 }
-            }
-            
-            // if no more linked ids, then end the dialog
-            if (FindNodeByWindowID(currentNodeID).LinkedIds.Count < 1)
-            {
-                if (!MultipleInteractions)
-                    interactable = false;
-                mainUIParent.GetComponent<RectTransform>().anchoredPosition = new Vector2(1000,1000);
-                choiceUIParent.GetComponent<RectTransform>().anchoredPosition = new Vector2(2000,1000);
-                DialogSystemInfo.InDialog = false;
-                inThisDialog = false;
+                
+                // if no more linked ids, then end the dialog
+                else if (FindNodeByWindowID(currentNodeID).LinkedIds.Count < 1)
+                {
+                    if (!MultipleInteractions)
+                        interactable = false;
+                    mainUIParent.GetComponent<RectTransform>().anchoredPosition = new Vector2(1000,1000);
+                    choiceUIParent.GetComponent<RectTransform>().anchoredPosition = new Vector2(2000,1000);
+                    DialogSystemInfo.InDialog = false;
+                    inThisDialog = false;
+                }
             }
         }
     }
