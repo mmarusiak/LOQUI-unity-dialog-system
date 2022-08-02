@@ -267,7 +267,7 @@ public class DialogController : MonoBehaviour
             for (int i = 0; i < FindNodeByWindowID(currentNodeID).LinkedIds.Count; i++)
             {
                 var newButton = DefaultControls.CreateButton(new DefaultControls.Resources());
-                newButton.transform.SetParent(GameObject.Find("Canvas").transform, false);
+                newButton.transform.SetParent(buttonsHolder.transform.Find((i+1).ToString()), false);
                 newButton.transform.position = buttonsHolder.transform.Find((i + 1).ToString()).position;
                 
                 if (DialogSystemInfo.ButtonBackground != null)
@@ -275,10 +275,10 @@ public class DialogController : MonoBehaviour
 
                 newButton.transform.GetChild(0).GetComponent<Text>().text =
                     FindNodeByWindowID(FindNodeByWindowID(currentNodeID).LinkedIds[i]).Title;
-
+                
                 newButton.GetComponent<Button>().onClick.AddListener(() =>
                 {
-                    MakeChoice(FindNodeByWindowID(currentNodeID).LinkedIds[i]);
+                    MakeChoice(FindNodeByWindowID(currentNodeID).LinkedIds[i - 1]);
                 });
             }
         }
@@ -299,8 +299,15 @@ public class DialogController : MonoBehaviour
     // choice button on click function
     void MakeChoice(int buttonID)
     {
-        // TO DO: destroy current set of buttons
-        choiceUIParent.transform.position = new Vector2(2000, 1000);
+        // destroy current set of buttons
+        GameObject buttonsHolder =
+            choiceUIParent.GetComponent<RectTransform>().Find(FindNodeByWindowID(currentNodeID).LinkedIds.Count.ToString()).gameObject;
+        for (int i = 0; i < buttonsHolder.transform.childCount; i++)
+        {
+            Destroy(buttonsHolder.transform.GetChild(i).GetChild(0).gameObject);
+        }
+        
+        choiceUIParent.GetComponent<RectTransform>().anchoredPosition = new Vector2(2000, 1000);
         CallMethod(FindNodeByWindowID(currentNodeID).MethodName, FindNodeByWindowID(currentNodeID).MethodArguments);
         currentNodeID = buttonID;
         NextNode();
