@@ -176,7 +176,7 @@ public class DialogController : MonoBehaviour
                             return;
                         }
 
-                        if (random > percents && random <= percents + FindNodeByWindowID(currentNodeID).LinkedIds[i])
+                        if (random > percents && random <= percents + FindNodeByWindowID(currentNodeID).LinkedNodesChance[i])
                         {
                             currentNodeID = FindNodeByWindowID(currentNodeID).LinkedIds[i];
                             NextNode();
@@ -256,7 +256,7 @@ public class DialogController : MonoBehaviour
         if (FindNodeByWindowID(currentNodeID).DialogNodeType == DialogNode.NodeType.AINode &&
             FindNodeByWindowID(currentNodeID).LinkedIds.Count > 1)
         {
-            choiceUIParent.GetComponent<RectTransform>().position = Vector3.zero;
+            choiceUIParent.GetComponent<RectTransform>().anchoredPosition = Vector3.zero;
             // find correct buttons holder - buttons holders exist in combinations that are different
             // by number of buttons and are named just by number of buttons
             // (they are empty Game Objects)
@@ -268,7 +268,7 @@ public class DialogController : MonoBehaviour
             {
                 var newButton = DefaultControls.CreateButton(new DefaultControls.Resources());
                 newButton.transform.SetParent(GameObject.Find("Canvas").transform, false);
-                newButton.transform.position = buttonsHolder.transform.Find(i.ToString()).position;
+                newButton.transform.position = buttonsHolder.transform.Find((i + 1).ToString()).position;
                 
                 if (DialogSystemInfo.ButtonBackground != null)
                     newButton.GetComponent<Image>().sprite = DialogSystemInfo.ButtonBackground;
@@ -292,7 +292,7 @@ public class DialogController : MonoBehaviour
             mainUIParent.transform.Find("DialogLineText").GetComponent<Text>().text += letter;
             yield return new WaitForSeconds(waitTime);
         }
-
+        
         textShown = true;
     }
 
