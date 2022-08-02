@@ -120,9 +120,7 @@ public class DialogController : MonoBehaviour
                 if (isInRange && Input.GetKeyDown(DialogSystemInfo.DialogActionKey) && !DialogSystemInfo.InDialog)
                 {
                     Debug.Log("ADSAD");
-                    DialogSystemInfo.InDialog = true;
                     StartDialog();
-                    inThisDialog = true;
                 }
             }
             else
@@ -133,9 +131,7 @@ public class DialogController : MonoBehaviour
                 if (isInRange && Input.GetKeyDown(DialogSystemInfo.DialogActionKey) && !DialogSystemInfo.InDialog)
                 {
                     Debug.Log("aAA");
-                    DialogSystemInfo.InDialog = true;
                     StartDialog();
-                    inThisDialog = true;
                 }
             }
         }
@@ -145,16 +141,16 @@ public class DialogController : MonoBehaviour
             (FindNodeByWindowID(currentNodeID).LinkedIds.Count <= 1 || 
              FindNodeByWindowID(currentNodeID).DialogNodeType != DialogNode.NodeType.AINode))
         {
-            
             // skip text display effect
+            // BUG DETECTED -> skipping just after entering dialog
             if (DialogSystemInfo.IsTextDisplayEffectSkippable && !textShown)
             {
                 textShown = true;
             }
             
-            else
+            else if (textShown)
             {
-
+                Debug.Log("Here");
                 // one ai answer, not random, just single
                 if (textShown &&
                     FindNodeByWindowID(currentNodeID).LinkedIds.Count == 1)
@@ -180,7 +176,7 @@ public class DialogController : MonoBehaviour
                             return;
                         }
 
-                        if (i > percents && i <= FindNodeByWindowID(currentNodeID).LinkedNodesChance[i])
+                        if (random > percents && random <= percents + FindNodeByWindowID(currentNodeID).LinkedIds[i])
                         {
                             currentNodeID = FindNodeByWindowID(currentNodeID).LinkedIds[i];
                             NextNode();
@@ -207,6 +203,8 @@ public class DialogController : MonoBehaviour
 
     void StartDialog()
     {
+        inThisDialog = true;
+        DialogSystemInfo.InDialog = true;
         // set appearance of the dialog UI to what the user set
         if (DialogSystemInfo.FirstRun)
         {
@@ -235,6 +233,7 @@ public class DialogController : MonoBehaviour
         if (TextDisplaySpeed > 0)
         {
             mainUIParent.GetComponent<RectTransform>().Find("DialogLineText").GetComponent<Text>().text = "";
+            textShown = false;
             IEnumerator coroutine = DisplayText(1/TextDisplaySpeed);
             textShown = false;
             StartCoroutine(coroutine);
@@ -288,13 +287,10 @@ public class DialogController : MonoBehaviour
     // Display text effect, works only if text isn't shown, text is shown if it finished, or if action key is pressed and skip display effect
     private IEnumerator DisplayText(float waitTime)
     {
-        foreach (char letter in FindNodeByWindowID(currentNodeID).Text) 
+        foreach (var letter in FindNodeByWindowID(currentNodeID).Text.Where(letter => !textShown))
         {
-            if (!textShown)
-            {
-                mainUIParent.transform.Find("DialogLineText").GetComponent<Text>().text += letter;
-                yield return new WaitForSeconds(waitTime);
-            }
+            mainUIParent.transform.Find("DialogLineText").GetComponent<Text>().text += letter;
+            yield return new WaitForSeconds(waitTime);
         }
 
         textShown = true;

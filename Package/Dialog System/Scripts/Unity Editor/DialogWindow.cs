@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -41,7 +40,7 @@ public class DialogWindow : EditorWindow
         new Color32(233, 196, 106, 255)
     };
 
-    [MenuItem("Window/Dialog system window")] 
+    [MenuItem("Window/Dialog Visual Editor")] 
     public static void Init()
     {
         DialogWindow window = GetWindow<DialogWindow>("Dialog editor");
@@ -497,11 +496,16 @@ public class DialogWindow : EditorWindow
                 {
                     if (linkedId == windowID)
                     {
-                        if(_dialogController.FindNodeByWindowID(linkedId).DialogNodeType == DialogNode.NodeType.AINode)
-                            node.LinkedNodesChance.ToList().RemoveAt(node.LinkedIds.IndexOf(windowID));
-                        
-                        node.LinkedIds.Remove(windowID);
-                        break;
+                        try
+                        {
+                            if (_dialogController.FindNodeByWindowID(linkedId).DialogNodeType ==
+                                DialogNode.NodeType.AINode)
+                                node.LinkedNodesChance.ToList().RemoveAt(node.LinkedIds.IndexOf(windowID));
+
+                            node.LinkedIds.Remove(windowID);
+                            break;
+                        }
+                        catch{}
                     }
                 }
             }
