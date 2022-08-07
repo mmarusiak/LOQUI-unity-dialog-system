@@ -19,7 +19,7 @@ If you found some issue, for example bug, please let me know it in [*issues sect
 
 # Progress:
 * ~~Visual editor;~~
-* ~~Basic dialog system - player's able to enter dialog, play it through (with choices also);~~
+* ~~Basic dialog system, player's able to enter dialog, play it through (with choices also);~~
 * ~~Customizable choice and main dialog UI sections (needs some more testing);~~
 
 
