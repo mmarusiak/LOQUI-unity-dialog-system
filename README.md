@@ -30,6 +30,7 @@ If you found some issue, for example bug, please let me know it in [*issues sect
 * Add skip option for display text effect;
 * Add sound playing when added to some line of dialog;
 * Optimalizate code;
+* Improve sample scene;
 
 
 # More about project
