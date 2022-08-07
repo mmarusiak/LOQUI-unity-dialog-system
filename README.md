@@ -1,7 +1,7 @@
 # LOQUI
 *in-dev state, not ready for being used as gamedev tool*
 
-Loqui is easy tool for adding dialogs to your game. System provides versality of features, but mainly:
+Loqui is easy tool for creating dialogs in your game in very simple way with help of documentation. System provides versality of features, but mainly:
 * Provides visual editor for dialogs;
 * Provides system of multiple choice for dialogs, also for AI (with chances set by developer);
 * Provides in dialog actions (for example, getting quest after dialog, or after some line of dialog);
@@ -29,12 +29,13 @@ For first approach and building your first dialog please check [*docs file*](doc
 * Optimalizate code;
 * Improve sample scene;
 * Add better text wrap on visual editor;
+* Finish documentation
 
 
 ## More about project
 Project is open source on MIT license. Project has been created as just another step in fully understand Unity, project is my hobby not job. 
 ![DialogExample](https://user-images.githubusercontent.com/20907620/183308771-fc7732bb-7f4b-46f7-8f69-f5bf49bc85a1.png)
-Also to understand better and to make your first steps with this tool easier, there are docs *(which are still improved)*.
+Also to understand better and to make your first steps with this tool easier, there are documentations *(which are still improved)*.
 
 *If you want to colaborate, have some ideas about project or questions feel free to reach me out.*
 
