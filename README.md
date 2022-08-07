@@ -9,7 +9,7 @@ Loqui is easy tool for adding dialogs to your game. System provides versality of
 With this tool you can make dialogs faster, easier and make some changes a lot quicker.
 
 
-# Installation
+## Installation
 *Project not ready for being used as gamedev tool*
 1. Clone this repository or download asset from Asset Store or Itch.io;
 2. Move Dialog System folder to your Unity Assets directory or if you want to check sample scene you can also move sample scene folder;
@@ -17,13 +17,13 @@ With this tool you can make dialogs faster, easier and make some changes a lot q
 For first approach and building your first dialog please check [*docs file*](docs/FirstApproach.md). 
 
 
-# Progress:
+## Progress:
 * ~~Visual editor;~~
 * ~~Basic dialog system, player's able to enter dialog, play it through (with choices also);~~
 * ~~Customizable choice and main dialog UI sections (needs some more testing);~~
 
 
-# To do
+## To do
 * Add skip option for display text effect;
 * Add sound playing when added to some line of dialog;
 * Optimalizate code;
@@ -31,7 +31,7 @@ For first approach and building your first dialog please check [*docs file*](doc
 * Add better text wrap on visual editor;
 
 
-# More about project
+## More about project
 Project is open source on MIT license. Project has been created as just another step in fully understand Unity, project is my hobby not job. 
 ![DialogExample](https://user-images.githubusercontent.com/20907620/183308771-fc7732bb-7f4b-46f7-8f69-f5bf49bc85a1.png)
 Also to understand better and to make your first steps with this tool easier, there are docs *(which are still improved)*.
@@ -40,5 +40,5 @@ Also to understand better and to make your first steps with this tool easier, th
 
 
 
-# Report an issue
+## Report an issue
 If you found some issue, for example bug, please let me know it in [*issues section*](https://github.com/mmarusiak/unity-dialog-system/issues). *Please check if issue that you are reporting isn't already reported by someone else.*
