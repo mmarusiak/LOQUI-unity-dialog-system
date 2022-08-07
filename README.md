@@ -31,7 +31,10 @@ For first approach and building your first dialog please check [*docs file*](doc
 
 
 # More about project
-Project is open source on MIT license. Project has been created as just another step in fully understand Unity, project is my hobby not job. If you want to colaborate, have some ideas about project or questions feel free to reach me out. 
+Project is open source on MIT license. Project has been created as just another step in fully understand Unity, project is my hobby not job. ![ExampleVisualDialog](https://user-images.githubusercontent.com/20907620/183308434-323596e0-2031-4b84-925b-73dcaff401a3.png)
+Also to understand better and to make your first steps with this tool easier, there are docs (which are still improved).
+*If you want to colaborate, have some ideas about project or questions feel free to reach me out.*
+
 
 
 # Report an issue
