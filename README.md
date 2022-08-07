@@ -1,5 +1,6 @@
 # LOQUI
 *in-dev state, not ready for being used as gamedev tool*
+
 Loqui is easy tool for adding dialogs to your game. System provides versality of features, but mainly:
 * Provides visual editor for dialogs;
 * Provides system of multiple choice for dialogs, also for AI (with chances set by developer);
