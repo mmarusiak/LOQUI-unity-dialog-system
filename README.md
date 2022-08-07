@@ -6,6 +6,7 @@ Loqui is easy tool for adding dialogs to your game. System provides versality of
 * Provides system of multiple choice for dialogs, also for AI (with chances set by developer);
 * Provides in dialog actions (for example, getting quest after dialog, or after some line of dialog);
 * Provides fully customizable UI;
+With this tool you can make dialogs faster, easier and make some changes a lot quicker.
 
 
 # Installation
@@ -34,4 +35,4 @@ If you found some issue, for example bug, please let me know it in [*issues sect
 
 
 # More about project
-Project is open source on MIT license. Project has been created as just another step in fully understand Unity, project is my hobby not work. If you want to colaborate, have some ideas about project or questions feel free to reach me out. 
+Project is open source on MIT license. Project has been created as just another step in fully understand Unity, project is my hobby not job. If you want to colaborate, have some ideas about project or questions feel free to reach me out. 
