@@ -17,10 +17,6 @@ With this tool you can make dialogs faster, easier and make some changes a lot q
 For first approach and building your first dialog please check [*docs file*](docs/FirstApproach.md). 
 
 
-# Report an issue
-If you found some issue, for example bug, please let me know it in [*issues section*](https://github.com/mmarusiak/unity-dialog-system/issues). *Please check if issue that you are reporting isn't already reported by someone else.*
-
-
 # Progress:
 * ~~Visual editor;~~
 * ~~Basic dialog system, player's able to enter dialog, play it through (with choices also);~~
@@ -36,3 +32,7 @@ If you found some issue, for example bug, please let me know it in [*issues sect
 
 # More about project
 Project is open source on MIT license. Project has been created as just another step in fully understand Unity, project is my hobby not job. If you want to colaborate, have some ideas about project or questions feel free to reach me out. 
+
+
+# Report an issue
+If you found some issue, for example bug, please let me know it in [*issues section*](https://github.com/mmarusiak/unity-dialog-system/issues). *Please check if issue that you are reporting isn't already reported by someone else.*
