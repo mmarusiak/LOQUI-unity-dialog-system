@@ -28,7 +28,7 @@ For first approach and building your first dialog please check [*docs file*](doc
 * Add sound playing when added to some line of dialog;
 * Optimalizate code;
 * Improve sample scene;
-* Better text wrap on visual editor;
+* Add better text wrap on visual editor;
 
 
 # More about project
