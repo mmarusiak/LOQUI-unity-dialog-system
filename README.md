@@ -11,7 +11,7 @@ With this tool you can make dialogs faster, easier and make some changes a lot q
 
 ## Installation
 *Project not ready for being used as gamedev tool*
-1. Clone this repository or download asset from Asset Store or Itch.io;
+1. Clone this repository or download asset from Asset Store or Itch.io (not available yet);
 2. Move Dialog System folder to your Unity Assets directory or if you want to check sample scene you can also move sample scene folder;
 
 For first approach and building your first dialog please check [*docs file*](docs/FirstApproach.md). 
