@@ -115,7 +115,6 @@ public class DialogController : MonoBehaviour
              FindNodeByWindowID(currentNodeID).DialogNodeType != DialogNode.NodeType.AINode))
         {
             // skip text display effect
-            // BUG DETECTED -> skipping just after entering dialog
             if (DialogSystemInfo.IsTextDisplayEffectSkippable && !textShown && inThisDialog)
             {
                 StopCoroutine(DisplayText(TextDisplaySpeed));
