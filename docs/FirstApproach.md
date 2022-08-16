@@ -22,4 +22,5 @@ Now if you have your lines of dialog *(dialog nodes)* please head to inspector -
 If you hit right mouse button on dialog node you will be able to destroy selected node, make new link *(connection to other dialog node)* and destroy old link. You can exit this popup window by clicking *"Back button"* either clicking other node.
 
 **Linking nodes**
+
 To link or destroy link to other node, just hit on the target node after clicking right button in popup.
