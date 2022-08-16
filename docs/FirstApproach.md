@@ -18,7 +18,7 @@ Now just head to *window -> Dialog Visual Editor* in your Unity Editor. *(If is 
 ### Visual editor guide
 
 To create your first line of dialog *(dialog node)* click on "Add Node button" and change all options to what you want.
-Now if you have your lines of dialog *(dialog nodes)* please head to inspector - open it by clicking this symbol:![Inspector](https://user-images.githubusercontent.com/20907620/184965010-5df7b05a-cd26-41dd-aa5a-210d352afcf0.png) Now you can modify your line of dialog *(dialog node)* in inspector *(be sure to select dialog node previous by clicking it)*.
+Now if you have your lines of dialog *(dialog nodes)* please head to inspector - open it by clicking this symbol: ![Inspector](https://user-images.githubusercontent.com/20907620/184965952-2eded3c3-1536-4855-a125-5e4b90b6f380.png) Now you can modify your line of dialog *(dialog node)* in inspector *(be sure to select dialog node previous by clicking it)*.
 If you hit right mouse button on dialog node you will be able to destroy selected node, make new link *(connection to other dialog node)* and destroy old link. You can exit this popup window by clicking *"Back button"* either clicking other node.
 
 **Linking nodes**
