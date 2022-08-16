@@ -24,12 +24,11 @@ For first approach and building your first dialog please check [*docs file*](doc
 
 
 ## To do
-* Add skip option for display text effect;
 * Add sound playing when added to some line of dialog;
 * Optimalizate code;
 * Improve sample scene;
 * Add better text wrap on visual editor;
-* Finish documentation
+* Finish documentation;
 
 
 ## More about project
