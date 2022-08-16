@@ -1,5 +1,7 @@
 # How to start?
 
+### Structure of dialogs
+
 First of all you need to understand structure of dialogs.
 Every line of dialog is called node - that's just C# class. Node has a lot of attributes but the most important are:
 - node type - who's is line of dialog (AI/player)
@@ -9,7 +11,7 @@ Every line of dialog is called node - that's just C# class. Node has a lot of at
 - chances - if there is more than one AI node connected to single player node you need to specify how rare is each response
 
 
-### To the scene
+### Prepare the scene
 
 To prepare your scene for this tool you need to create/add game *tag* **"GameController"** to your DialogSystemInfo holder *(probably just your game controller will do the best job here)*.
 Now just head to *window -> Dialog Visual Editor* in your Unity Editor. *(If is greyed-out please enter the gamemode)*. Now select your Dialog Actor from list of GameObjects on your scene and click *"Create new dialog actor" button*.
