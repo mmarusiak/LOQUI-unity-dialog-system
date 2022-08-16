@@ -580,7 +580,7 @@ GameObject:
   - component: {fileID: 1379098351}
   - component: {fileID: 1379098350}
   - component: {fileID: 1379098349}
-  - component: {fileID: 1379098348}
+  - component: {fileID: 1379098353}
   m_Layer: 0
   m_Name: TestAI
   m_TagString: Untagged
@@ -588,109 +588,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1379098348
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1379098347}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4cf8bc3568a3d02bb8b8c4288a332e6a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  DialogNodes:
-  - Title: Start of the dialog
-    Text: Hello! Do you know any way back to New Orlean?
-    WindowID: 0
-    NodeRect:
-      serializedVersion: 2
-      x: 195
-      y: 249
-      width: 100
-      height: 100
-    DialogNodeType: 1
-    DialogTextAudio: {fileID: 0}
-    MethodName: 
-    LinkedNodesChance: 4b00000019000000
-    LinkedIds: 0200000001000000
-  - Title: AI 1.1
-    Text: No, go away man
-    WindowID: 1
-    NodeRect:
-      serializedVersion: 2
-      x: 3
-      y: 405
-      width: 100
-      height: 100
-    DialogNodeType: 0
-    DialogTextAudio: {fileID: 0}
-    MethodName: 
-    LinkedNodesChance: 
-    LinkedIds: 
-  - Title: AI 1.2
-    Text: Yes, you need to go right and left and right and then left, left, left,
-      left
-    WindowID: 2
-    NodeRect:
-      serializedVersion: 2
-      x: 297
-      y: 384
-      width: 100
-      height: 100
-    DialogNodeType: 0
-    DialogTextAudio: {fileID: 0}
-    MethodName: 
-    LinkedNodesChance: 
-    LinkedIds: 0300000004000000
-  - Title: Wholesome thanking
-    Text: Thanks man thanks thanks thanks
-    WindowID: 3
-    NodeRect:
-      serializedVersion: 2
-      x: 206
-      y: 525
-      width: 100
-      height: 100
-    DialogNodeType: 1
-    DialogTextAudio: {fileID: 0}
-    MethodName: 
-    LinkedNodesChance: 
-    LinkedIds: 
-  - Title: Map
-    Text: Do you have a map or gps?
-    WindowID: 4
-    NodeRect:
-      serializedVersion: 2
-      x: 408
-      y: 524
-      width: 100
-      height: 100
-    DialogNodeType: 1
-    DialogTextAudio: {fileID: 0}
-    MethodName: 
-    LinkedNodesChance: 
-    LinkedIds: 05000000
-  - Title: No map
-    Text: I don't have a map...
-    WindowID: 5
-    NodeRect:
-      serializedVersion: 2
-      x: 488
-      y: 672.5
-      width: 100
-      height: 100
-    DialogNodeType: 0
-    DialogTextAudio: {fileID: 0}
-    MethodName: 
-    LinkedNodesChance: 
-    LinkedIds: 
-  ActorName: Bobby bob
-  DialogActivationRange: 20
-  TextDisplaySpeed: 100
-  MultipleInteractions: 1
-  DialogSystemInfo: {fileID: 0}
 --- !u!65 &1379098349
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -769,6 +666,52 @@ Transform:
   m_Father: {fileID: 1697678106}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1379098353
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1379098347}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4cf8bc3568a3d02bb8b8c4288a332e6a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  DialogNodes:
+  - Title: Start of the dialog
+    Text: Hello, I'm a bit lost, I'm looking for a route to New York.
+    WindowID: 0
+    NodeRect:
+      serializedVersion: 2
+      x: 28
+      y: 277.5
+      width: 100
+      height: 100
+    DialogNodeType: 1
+    DialogTextAudio: {fileID: 0}
+    MethodName: 
+    LinkedNodesChance: 
+    LinkedIds: 
+  - Title: Map response
+    Text: Oh, don't you have a map?
+    WindowID: 1
+    NodeRect:
+      serializedVersion: 2
+      x: 59
+      y: 415.5
+      width: 100
+      height: 100
+    DialogNodeType: 0
+    DialogTextAudio: {fileID: 0}
+    MethodName: 
+    LinkedNodesChance: 
+    LinkedIds: 
+  ActorName: Bobby bob
+  DialogActivationRange: 5
+  TextDisplaySpeed: 0
+  MultipleInteractions: 1
+  DialogSystemInfo: {fileID: 0}
 --- !u!1 &1438662131
 GameObject:
   m_ObjectHideFlags: 0

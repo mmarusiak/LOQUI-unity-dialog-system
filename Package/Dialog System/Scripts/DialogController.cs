@@ -109,33 +109,6 @@ public class DialogController : MonoBehaviour
 
     void Update()
     {
-        if (interactable)
-        {
-            if (DialogSystemInfo.Is3D)
-            {
-                bool isInRange =
-                    Physics.OverlapSphere(transform.position, DialogActivationRange, DialogSystemInfo.PlayerLayerMask)
-                        .Length >
-                    0;
-                if (isInRange && Input.GetKeyDown(DialogSystemInfo.DialogActionKey) && !DialogSystemInfo.InDialog)
-                {
-                    Debug.Log("ADSAD");
-                    StartDialog();
-                }
-            }
-            else
-            {
-                bool isInRange =
-                    Physics2D.OverlapCircle(transform.position, DialogActivationRange,
-                        DialogSystemInfo.PlayerLayerMask) != null;
-                if (isInRange && Input.GetKeyDown(DialogSystemInfo.DialogActionKey) && !DialogSystemInfo.InDialog)
-                {
-                    Debug.Log("aAA");
-                    StartDialog();
-                }
-            }
-        }
-
         // input only works when choice buttons are not shown
         if (Input.GetKeyDown(DialogSystemInfo.DialogActionKey) && inThisDialog &&
             (FindNodeByWindowID(currentNodeID).LinkedIds.Count <= 1 || 
@@ -143,14 +116,15 @@ public class DialogController : MonoBehaviour
         {
             // skip text display effect
             // BUG DETECTED -> skipping just after entering dialog
-            if (DialogSystemInfo.IsTextDisplayEffectSkippable && !textShown)
+            if (DialogSystemInfo.IsTextDisplayEffectSkippable && !textShown && inThisDialog)
             {
+                StopCoroutine(DisplayText(TextDisplaySpeed));
                 textShown = true;
+                mainUIParent.transform.Find("DialogLineText").GetComponent<Text>().text = FindNodeByWindowID(currentNodeID).Text;
             }
             
             else if (textShown)
             {
-                Debug.Log("Here");
                 // one ai answer, not random, just single
                 if (FindNodeByWindowID(currentNodeID).LinkedIds.Count == 1)
                 {
@@ -194,6 +168,31 @@ public class DialogController : MonoBehaviour
                     choiceUIParent.GetComponent<RectTransform>().anchoredPosition = new Vector2(2000,1000);
                     DialogSystemInfo.InDialog = false;
                     inThisDialog = false;
+                }
+            }
+        }
+        
+        if (interactable)
+        {
+            if (DialogSystemInfo.Is3D)
+            {
+                bool isInRange =
+                    Physics.OverlapSphere(transform.position, DialogActivationRange, DialogSystemInfo.PlayerLayerMask)
+                        .Length >
+                    0;
+                if (isInRange && Input.GetKeyDown(DialogSystemInfo.DialogActionKey) && !DialogSystemInfo.InDialog)
+                {
+                    StartDialog();
+                }
+            }
+            else
+            {
+                bool isInRange =
+                    Physics2D.OverlapCircle(transform.position, DialogActivationRange,
+                        DialogSystemInfo.PlayerLayerMask) != null;
+                if (isInRange && Input.GetKeyDown(DialogSystemInfo.DialogActionKey) && !DialogSystemInfo.InDialog)
+                {
+                    StartDialog();
                 }
             }
         }
@@ -285,12 +284,19 @@ public class DialogController : MonoBehaviour
     // Display text effect, works only if text isn't shown, text is shown if it finished, or if action key is pressed and skip display effect
     private IEnumerator DisplayText(float waitTime)
     {
-        foreach (var letter in FindNodeByWindowID(currentNodeID).Text.Where(letter => !textShown))
+        if (waitTime > 0)
         {
-            mainUIParent.transform.Find("DialogLineText").GetComponent<Text>().text += letter;
-            yield return new WaitForSeconds(waitTime);
+            foreach (var letter in FindNodeByWindowID(currentNodeID).Text.Where(letter => !textShown))
+            {
+                mainUIParent.transform.Find("DialogLineText").GetComponent<Text>().text += letter;
+                yield return new WaitForSeconds(waitTime);
+            }
         }
-        
+        else
+        {
+            mainUIParent.transform.Find("DialogLineText").GetComponent<Text>().text = FindNodeByWindowID(currentNodeID).Text;
+        }
+
         textShown = true;
     }
 
