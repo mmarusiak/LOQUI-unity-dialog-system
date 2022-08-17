@@ -407,11 +407,38 @@ public class DialogWindow : EditorWindow
                    "Add argument"))
                {
                    _dialogController.FindNodeByWindowID(_lastTouchedWindow).MethodArguments.Add(_argument);
-                   _argument = null;
+                   _argument = "";
                    _selectedNodeType = -1;
                }
+               
+               // created arguments list, option to destroy
+               
+               GUI.Label(new Rect(position.width - _inspectorWidth + 10, 400 + ypos, _inspectorWidth/2, 20),
+                   "Arguments list");
+               
+               int currentYPos = 440 + ypos;
+
+             
+               float xPos = position.width - _inspectorWidth + 10 + _inspectorWidth * 2 / 3;
+               // list is off, here it spams errors
+               for (int i = 0;
+                   i < _dialogController.FindNodeByWindowID(_lastTouchedWindow).MethodArguments.Count;
+                       i++)
+               { 
+                   if (i % 2 == 0) 
+                   { 
+                       currentYPos += 40; 
+                       xPos = position.width - _inspectorWidth + 10 + _inspectorWidth / 3;
+                   }
+                       
+                   if (GUI.Button(new Rect(xPos, currentYPos, _inspectorWidth / 3 - 30, 30),
+                       _dialogController.FindNodeByWindowID(_lastTouchedWindow).MethodArguments[i].ToString() + " [-]"))
+                   {
+                       _dialogController.FindNodeByWindowID(_lastTouchedWindow).MethodArguments.
+                           Remove(_dialogController.FindNodeByWindowID(_lastTouchedWindow).MethodArguments[i]);
+                   }
+               }
            }
-           
         }
     }
 

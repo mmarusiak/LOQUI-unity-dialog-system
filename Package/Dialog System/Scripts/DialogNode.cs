@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -17,6 +18,7 @@ public class DialogNode
     public NodeType DialogNodeType;
     public AudioClip DialogTextAudio;
     public string MethodName = "";
+    
     public List<object> MethodArguments = new List<object>();
 
     public List<int> LinkedNodesChance = new List<int>();

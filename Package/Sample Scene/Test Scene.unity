@@ -364,7 +364,7 @@ MonoBehaviour:
   ActionKeyGraphic: {fileID: 0}
   Is3D: 1
   ShowWhoIsSpeaking: 1
-  IsTextDisplayEffectSkippable: 0
+  IsTextDisplayEffectSkippable: 1
   ChoiceButton: {fileID: 0}
   InDialog: 0
   FirstRun: 1
@@ -709,7 +709,7 @@ MonoBehaviour:
     LinkedIds: 
   ActorName: Bobby bob
   DialogActivationRange: 5
-  TextDisplaySpeed: 0
+  TextDisplaySpeed: 5
   MultipleInteractions: 1
   DialogSystemInfo: {fileID: 0}
 --- !u!1 &1438662131
