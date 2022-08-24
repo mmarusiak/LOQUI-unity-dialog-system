@@ -21,6 +21,7 @@ For first approach and building your first dialog please check [*docs file*](doc
 * ~~Visual editor;~~
 * ~~Basic dialog system, player's able to enter dialog, play it through (with choices also);~~
 * ~~Customizable choice and main dialog UI sections (needs some more testing);~~
+* ~~Method calling system during dialog, methods can be added in inspector in visual editor, also with arguments;~~
 
 
 ## To do
@@ -29,7 +30,6 @@ For first approach and building your first dialog please check [*docs file*](doc
 * Improve sample scene;
 * Add better text wrap on visual editor;
 * Finish documentation;
-* Add method arguements-holder -> *previous holder was based on "object" type which can't be serializabled, which means quitting editor will "remove" all arguemnt data*;
 
 
 ## More about project
