@@ -8,6 +8,8 @@ public class DialogSystemInfo : MonoBehaviour
     public Texture2D ArrowTexture;
     [HideInInspector]
     public float ArrowSize;
+    [HideInInspector]
+    public int actorID;
     
     [Space(10)]
     [Header("Dialog appearance")]

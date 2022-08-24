@@ -31,8 +31,10 @@ public class DialogWindow : EditorWindow
 
     private DialogController _dialogController;
     private DialogSystemInfo _dialogSystemInfo;
+    
     public GameObject dialogActor;
 
+    
     private Color32[] _colorPallete = new[]
     {
         new Color32(38, 70, 83, 255),
@@ -49,6 +51,7 @@ public class DialogWindow : EditorWindow
 
     private void OnGUI()
     {
+        
         if (_dialogController == null && dialogActor != null)
         {
             _dialogController = dialogActor.GetComponent<DialogController>();
@@ -72,7 +75,8 @@ public class DialogWindow : EditorWindow
         DrawStaticGroup();
         
         if (_actorCreated)
-        { 
+        {
+            _dialogSystemInfo.actorID = dialogActor.GetInstanceID();
             DrawMainPanel();
 
             if (_inspectorShown)
@@ -95,6 +99,15 @@ public class DialogWindow : EditorWindow
     {
         // Game object popup
         var allGameObjects = FindObjectsOfType<GameObject>();
+        foreach (var go in allGameObjects)
+        {
+            dialogActor = go.GetInstanceID() == _dialogSystemInfo.actorID ? go : dialogActor;
+        }
+
+        if (dialogActor != null)
+        {
+            _selectedActor = allGameObjects.ToList().IndexOf(dialogActor);
+        }
         _selectedActor = EditorGUI.Popup(new Rect(0, 0, 140, 20), _selectedActor,allGameObjects.Select(
             (gameobject) => gameobject.name).ToArray());
 
@@ -268,7 +281,7 @@ public class DialogWindow : EditorWindow
             goNameStyle.normal.textColor = Color.white;
             goNameStyle.fontSize = 20;
             
-            GUI.Label(new Rect(position.width - _inspectorWidth + 10, 40, _inspectorWidth, 40), 
+            GUI.Label(new Rect(position.width - _inspectorWidth + 10, 20, _inspectorWidth, 40), 
                dialogActor.name, goNameStyle);
 
             // Title info
@@ -413,10 +426,10 @@ public class DialogWindow : EditorWindow
                
                // arguments list, option to destroy
                if(_dialogController.FindNodeByWindowID(_lastTouchedWindow).MethodArguments.Count > 0)
-                    GUI.Label(new Rect(position.width - _inspectorWidth + 10, 400 + ypos, _inspectorWidth/2, 20),
+                    GUI.Label(new Rect(position.width - _inspectorWidth + 10, 420 + ypos, _inspectorWidth/2, 20),
                         "Arguments list");
                
-               int currentYPos = 440 + ypos;
+               int currentYPos = 420 + ypos;
 
                
                // list is off, here it spams errors + list of arguments is not serializable, so it wont "save" data after leaving unity
