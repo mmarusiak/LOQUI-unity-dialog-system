@@ -2,10 +2,10 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-[System.Serializable]
+[Serializable]
 public class DialogNode
 {
-    [System.Serializable]
+    [Serializable]
     public enum NodeType
     {
         AINode,
@@ -18,8 +18,8 @@ public class DialogNode
     public NodeType DialogNodeType;
     public AudioClip DialogTextAudio;
     public string MethodName = "";
-    
-    public List<object> MethodArguments = new List<object>();
+
+    public List<MethodArgument> MethodArguments = new List<MethodArgument>();
 
     public List<int> LinkedNodesChance = new List<int>();
 

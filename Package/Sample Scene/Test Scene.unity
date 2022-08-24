@@ -678,38 +678,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4cf8bc3568a3d02bb8b8c4288a332e6a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  DialogNodes:
-  - Title: Start of the dialog
-    Text: Hello, I'm a bit lost, I'm looking for a route to New York.
-    WindowID: 0
-    NodeRect:
-      serializedVersion: 2
-      x: 28
-      y: 277.5
-      width: 100
-      height: 100
-    DialogNodeType: 1
-    DialogTextAudio: {fileID: 0}
-    MethodName: 
-    LinkedNodesChance: 
-    LinkedIds: 
-  - Title: Map response
-    Text: Oh, don't you have a map?
-    WindowID: 1
-    NodeRect:
-      serializedVersion: 2
-      x: 59
-      y: 415.5
-      width: 100
-      height: 100
-    DialogNodeType: 0
-    DialogTextAudio: {fileID: 0}
-    MethodName: 
-    LinkedNodesChance: 
-    LinkedIds: 
+  DialogNodes: []
   ActorName: Bobby bob
   DialogActivationRange: 5
-  TextDisplaySpeed: 5
+  TextDisplaySpeed: 0
   MultipleInteractions: 1
   DialogSystemInfo: {fileID: 0}
 --- !u!1 &1438662131

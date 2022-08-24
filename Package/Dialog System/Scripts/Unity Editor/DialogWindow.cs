@@ -420,7 +420,7 @@ public class DialogWindow : EditorWindow
 
              
                float xPos = position.width - _inspectorWidth + 10 + _inspectorWidth * 2 / 3;
-               // list is off, here it spams errors
+               // list is off, here it spams errors + list of arguments is not serializable, so it wont "save" data after leaving unity
                for (int i = 0;
                    i < _dialogController.FindNodeByWindowID(_lastTouchedWindow).MethodArguments.Count;
                        i++)
