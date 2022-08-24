@@ -352,6 +352,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ArrowTexture: {fileID: 2800000, guid: 15ae683239f51372ca90463b74751e65, type: 3}
   ArrowSize: 14
+  actorID: 22452
   ButtonBackground: {fileID: 0}
   DialogLineBackground: {fileID: 0}
   TextFont: {fileID: 0}
@@ -581,6 +582,7 @@ GameObject:
   - component: {fileID: 1379098350}
   - component: {fileID: 1379098349}
   - component: {fileID: 1379098353}
+  - component: {fileID: 1379098354}
   m_Layer: 0
   m_Name: TestAI
   m_TagString: Untagged
@@ -678,12 +680,72 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4cf8bc3568a3d02bb8b8c4288a332e6a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  DialogNodes: []
+  DialogNodes:
+  - Title: Welcome
+    Text: Hello man.
+    WindowID: 0
+    NodeRect:
+      serializedVersion: 2
+      x: 449
+      y: 242.5
+      width: 100
+      height: 100
+    DialogNodeType: 0
+    DialogTextAudio: {fileID: 0}
+    MethodName: Welcome
+    MethodArguments:
+    - ArgType: 0
+      StringArg: Welcome
+      IntArg: 0
+      DoubleArg: 0
+      FloatArg: 0
+      BoolArg: 0
+    - ArgType: 1
+      StringArg: 
+      IntArg: 123
+      DoubleArg: 0
+      FloatArg: 0
+      BoolArg: 0
+    - ArgType: 4
+      StringArg: 
+      IntArg: 0
+      DoubleArg: 0
+      FloatArg: 0
+      BoolArg: 0
+    LinkedNodesChance: 
+    LinkedIds: 01000000
+  - Title: Hi by player
+    Text: Hi.
+    WindowID: 1
+    NodeRect:
+      serializedVersion: 2
+      x: 452
+      y: 599.5
+      width: 100
+      height: 100
+    DialogNodeType: 1
+    DialogTextAudio: {fileID: 0}
+    MethodName: 
+    MethodArguments: []
+    LinkedNodesChance: 
+    LinkedIds: 
   ActorName: Bobby bob
   DialogActivationRange: 5
-  TextDisplaySpeed: 0
+  TextDisplaySpeed: 20
   MultipleInteractions: 1
   DialogSystemInfo: {fileID: 0}
+--- !u!114 &1379098354
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1379098347}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea09db58b9d8fcde0b94cf10d8a5be49, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1438662131
 GameObject:
   m_ObjectHideFlags: 0

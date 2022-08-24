@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -26,6 +27,7 @@ public class DialogController : MonoBehaviour
     private bool textShown = false;
     private bool inThisDialog = false;
     private bool interactable = true;
+    private bool quitFlag = false;
 
     
     // if isConnected is false and isLinked is true, then it's the start node
@@ -161,17 +163,19 @@ public class DialogController : MonoBehaviour
                 // if no more linked ids, then end the dialog
                 else if (FindNodeByWindowID(currentNodeID).LinkedIds.Count < 1)
                 {
+                    currentNodeID = 0;
                     if (!MultipleInteractions)
                         interactable = false;
                     mainUIParent.GetComponent<RectTransform>().anchoredPosition = new Vector2(1000,1000);
                     choiceUIParent.GetComponent<RectTransform>().anchoredPosition = new Vector2(2000,1000);
                     DialogSystemInfo.InDialog = false;
                     inThisDialog = false;
+                    quitFlag = true;
                 }
             }
         }
         
-        if (interactable)
+        if (interactable && !quitFlag)
         {
             if (DialogSystemInfo.Is3D)
             {
@@ -195,6 +199,8 @@ public class DialogController : MonoBehaviour
                 }
             }
         }
+
+        quitFlag = false;
     }
 
     void StartDialog()
@@ -233,6 +239,10 @@ public class DialogController : MonoBehaviour
             IEnumerator coroutine = DisplayText(1/TextDisplaySpeed);
             textShown = false;
             StartCoroutine(coroutine);
+        }
+        else
+        {
+            mainUIParent.transform.Find("DialogLineText").GetComponent<Text>().text = FindNodeByWindowID(currentNodeID).Text;
         }
         
         // just show who is speaking, show player's name (set in inspector DialogSystemInfo) or AI' name (DialogController)
@@ -278,6 +288,10 @@ public class DialogController : MonoBehaviour
                 });
             }
         }
+        else
+        {
+            CallMethod(FindNodeByWindowID(currentNodeID).MethodName, FindNodeByWindowID(currentNodeID).MethodArguments);
+        }
     }
 
     // Display text effect, works only if text isn't shown, text is shown if it finished, or if action key is pressed and skip display effect
@@ -321,11 +335,18 @@ public class DialogController : MonoBehaviour
         return DialogNodes.FirstOrDefault(dialogNode => dialogNode.WindowID == windowID);
     }
 
-    public void CallMethod(string methodName, params object[] arguments)
+    // to do
+    public void CallMethod(string methodName, List<MethodArgument> arguments)
     {
+        List<object> argumentsConverted = new List<object>();
+        foreach (var arg in arguments)
+        {
+            argumentsConverted.Add(arg.Content());
+        }
+        
         if (methodName == "") return;
-        if(arguments.Length > 0)
-            SendMessage(methodName, arguments);
+        if(arguments.Count > 0)
+            SendMessage(methodName, argumentsConverted.ToArray());
         else
             SendMessage(methodName);
     }
