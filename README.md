@@ -29,6 +29,7 @@ For first approach and building your first dialog please check [*docs file*](doc
 * Improve sample scene;
 * Add better text wrap on visual editor;
 * Finish documentation;
+* Add method arguements-holder -> *previous holder was based on "object" type which can't be serializabled, which means quitting editor will "remove" all arguemnt data*;
 
 
 ## More about project
