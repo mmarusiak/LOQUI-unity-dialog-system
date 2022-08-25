@@ -22,11 +22,11 @@ For first approach and building your first dialog please check [*docs file*](doc
 * ~~Basic dialog system, player's able to enter dialog, play it through (with choices also);~~
 * ~~Customizable choice and main dialog UI sections (needs some more testing);~~
 * ~~Method calling system during dialog, methods can be added in inspector in visual editor, also with arguments;~~
+* ~~Sound system - sound playing when added to some line of dialog;~~
 
 
 ## To do
-* Add sound playing when added to some line of dialog;
-* Optimalizate code;
+* Optimaze code;
 * Improve sample scene;
 * Add better text wrap on visual editor;
 * Finish documentation;
