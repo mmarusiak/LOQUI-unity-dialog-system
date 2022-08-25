@@ -291,6 +291,12 @@ public class DialogController : MonoBehaviour
         else
         {
             CallMethod(FindNodeByWindowID(currentNodeID).MethodName, FindNodeByWindowID(currentNodeID).MethodArguments);
+            if (FindNodeByWindowID(currentNodeID).DialogTextAudio != null)
+            {
+                AudioSource audioSource = gameObject.GetComponent<AudioSource>();
+                audioSource.clip = FindNodeByWindowID(currentNodeID).DialogTextAudio;
+                audioSource.Play();
+            }
         }
     }
 
