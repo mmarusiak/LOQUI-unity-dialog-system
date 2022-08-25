@@ -352,7 +352,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ArrowTexture: {fileID: 2800000, guid: 15ae683239f51372ca90463b74751e65, type: 3}
   ArrowSize: 14
-  actorID: 22452
+  actorID: 22458
   ButtonBackground: {fileID: 0}
   DialogLineBackground: {fileID: 0}
   TextFont: {fileID: 0}

@@ -231,6 +231,12 @@ public class DialogController : MonoBehaviour
     
     void NextNode()
     {
+        // stop previous audio if possible
+        if (TryGetComponent(out AudioSource source))
+        {
+            source.Stop();
+        }
+        
         // if display effect is set, then play it
         if (TextDisplaySpeed > 0)
         {
@@ -290,10 +296,18 @@ public class DialogController : MonoBehaviour
         }
         else
         {
+            // method caller
             CallMethod(FindNodeByWindowID(currentNodeID).MethodName, FindNodeByWindowID(currentNodeID).MethodArguments);
+            
+            // audio player
             if (FindNodeByWindowID(currentNodeID).DialogTextAudio != null)
             {
-                AudioSource audioSource = gameObject.GetComponent<AudioSource>();
+                AudioSource audioSource;
+                if (!TryGetComponent(out audioSource))
+                {
+                    audioSource = gameObject.AddComponent<AudioSource>();
+                }
+                
                 audioSource.clip = FindNodeByWindowID(currentNodeID).DialogTextAudio;
                 audioSource.Play();
             }
