@@ -26,7 +26,7 @@ For first approach and building your first dialog please check [*docs file*](doc
 
 
 ## To do
-* Optimaze code;
+* Optimize code;
 * Improve sample scene;
 * Add better text wrap on visual editor;
 * Finish documentation;
