@@ -3,7 +3,7 @@
 
 Loqui is easy tool for creating dialogs in your game in very simple way with help of documentation. System provides versality of features, but mainly:
 * Provides visual editor for dialogs;
-* Provides system of multiple choice for dialogs, also for AI (with chances set by developer);
+* Provides multiple choice system for dialogs, also for AI (with chances set by developer);
 * Provides in dialog actions (for example, getting quest after dialog, or after some line of dialog);
 * Provides fully customizable UI;
 
@@ -30,7 +30,7 @@ For first approach and building your first dialog please check [*docs file*](doc
 * Customizable UI choice section - graphics;
 * Optimize code;
 * Improve sample scene;
-* Add better text wrap on visual editor;
+* Improve text wraping on visual editor;
 * Finish documentation;
 
 
