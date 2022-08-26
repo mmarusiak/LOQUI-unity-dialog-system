@@ -6,6 +6,7 @@ Loqui is easy tool for creating dialogs in your game in very simple way with hel
 * Provides system of multiple choice for dialogs, also for AI (with chances set by developer);
 * Provides in dialog actions (for example, getting quest after dialog, or after some line of dialog);
 * Provides fully customizable UI;
+
 With this tool you can make dialogs faster, easier and make some changes a lot quicker.
 
 
