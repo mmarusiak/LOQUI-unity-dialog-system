@@ -301,19 +301,26 @@ public class DialogWindow : EditorWindow
                    _dialogController.FindNodeByWindowID(_lastTouchedWindow).Text);
 
            // Audio Clip
-           
+
            // https://answers.unity.com/questions/900576/how-to-obtain-selected-files-in-the-project-window.html
-           string boxText = "Select clip!";
+           string boxText = "Select clip!"; 
            List<AudioClip> audioClips = new List<AudioClip>();
+
            foreach (Object o in Selection.objects)
-           {
-               if (o is AudioClip clip)
-               {
-                   audioClips.Add(clip);
-                   _audioClipName = audioClips[0].name;
+           { 
+               if (o is AudioClip clip) 
+               { 
+                   audioClips.Add(clip); 
+                   _audioClipName = audioClips[0].name; 
                    boxText = _audioClipName;
                }
            }
+           
+           if (_dialogController.FindNodeByWindowID(_lastTouchedWindow).DialogTextAudio != null)
+           { 
+               boxText = _dialogController.FindNodeByWindowID(_lastTouchedWindow).DialogTextAudio.name;
+           }
+
            GUI.Label(new Rect(position.width - _inspectorWidth + 10, 200, _inspectorWidth/3 - 30, 20),
                "Audio clip");
            GUI.Box(new Rect(position.width - 2 * _inspectorWidth/3 + 10, 202, _inspectorWidth/3 - 30, 20), 
@@ -349,7 +356,7 @@ public class DialogWindow : EditorWindow
                        _dialogController.FindNodeByWindowID(_dialogController.FindNodeByWindowID(_lastTouchedWindow).LinkedIds[i]).Title);
 
                    int.TryParse(GUI.TextField(new Rect(position.width + 10 - _inspectorWidth / 2 * (i % 2 + 1), 205 + ypos,
-                       _inspectorWidth / 3, 30), _dialogController.FindNodeByWindowID(_lastTouchedWindow).LinkedNodesChance[i].ToString()), 
+                           _inspectorWidth / 3, 30), _dialogController.FindNodeByWindowID(_lastTouchedWindow).LinkedNodesChance[i].ToString()), 
                        out var newChance);
 
                    _dialogController.FindNodeByWindowID(_lastTouchedWindow).LinkedNodesChance[i] = newChance;
@@ -363,8 +370,8 @@ public class DialogWindow : EditorWindow
                    _inspectorWidth/2, 20),
                "Method name");
            _dialogController.FindNodeByWindowID(_lastTouchedWindow).MethodName = GUI.TextField(
-                   new Rect(position.width - _inspectorWidth/2, 260 + ypos, _inspectorWidth/2 - 10, 20),
-                   _dialogController.FindNodeByWindowID(_lastTouchedWindow).MethodName);
+               new Rect(position.width - _inspectorWidth/2, 260 + ypos, _inspectorWidth/2 - 10, 20),
+               _dialogController.FindNodeByWindowID(_lastTouchedWindow).MethodName);
            GUI.Label(new Rect(position.width - _inspectorWidth/2, 278 + ypos, _inspectorWidth/2 - 10, 40),
                "Leave blank if  there is no method to call after this line of dialog", 
                paragraph);
@@ -426,8 +433,8 @@ public class DialogWindow : EditorWindow
                
                // arguments list, option to destroy
                if(_dialogController.FindNodeByWindowID(_lastTouchedWindow).MethodArguments.Count > 0)
-                    GUI.Label(new Rect(position.width - _inspectorWidth + 10, 420 + ypos, _inspectorWidth/2, 20),
-                        "Arguments list");
+                   GUI.Label(new Rect(position.width - _inspectorWidth + 10, 420 + ypos, _inspectorWidth/2, 20),
+                       "Arguments list");
                
                int currentYPos = 420 + ypos;
 
@@ -435,7 +442,7 @@ public class DialogWindow : EditorWindow
                // list is off, here it spams errors + list of arguments is not serializable, so it wont "save" data after leaving unity
                for (int i = 0;
                    i < _dialogController.FindNodeByWindowID(_lastTouchedWindow).MethodArguments.Count;
-                       i++)
+                   i++)
                { 
                    float xPos = position.width - _inspectorWidth + 10 + _inspectorWidth * 2 / 3;
                    if (i % 2 == 0) 
