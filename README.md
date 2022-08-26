@@ -21,12 +21,13 @@ For first approach and building your first dialog please check [*docs file*](doc
 ## Progress:
 * ~~Visual editor;~~
 * ~~Basic dialog system, player's able to enter dialog, play it through (with choices also);~~
-* ~~Customizable choice and main dialog UI sections (needs some more testing);~~
+* ~~Customizable choice and main dialog UI sections - buttons positions (general appearance) (needs some more testing);~~
 * ~~Method calling system during dialog, methods can be added in inspector in visual editor, also with arguments;~~
 * ~~Sound system - sound playing when added to some line of dialog;~~
 
 
 ## To do
+* Customizable UI choice section - graphics;
 * Optimize code;
 * Improve sample scene;
 * Add better text wrap on visual editor;
