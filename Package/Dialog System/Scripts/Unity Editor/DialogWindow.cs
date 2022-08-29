@@ -287,7 +287,7 @@ public class DialogWindow : EditorWindow
             GUI.Label(new Rect(position.width - _inspectorWidth + 10, 20, _inspectorWidth, 40), 
                dialogActor.name, goNameStyle);
 
-            // Start nodes
+            // Start nodes TESTING FOR NOW  
             List<DialogNode> startNodes = new List<DialogNode>();
             List<int> linkedIDs = new List<int>();
             
@@ -312,37 +312,46 @@ public class DialogWindow : EditorWindow
                  // get all variables
                  
                  var allGameObjects = FindObjectsOfType<GameObject>();
-                 var components = new List<Component>();
+                 var components = new Dictionary<GameObject, Component[]>();
                  
                  foreach (var go in allGameObjects)
                  {
-                     foreach (var component in go.GetComponents<Component>())
-                     {
-                         if(component is MonoBehaviour)
-                            components.Add(component);
+                     components.Add(go, go.GetComponents<Component>().Where((component) => component is MonoBehaviour
+                     && component.GetType() != typeof(DialogSystemInfo)).ToArray());
+                 }
+                 
+                 var gameobjectComponents = new Dictionary<GameObject, Dictionary<Component, FieldInfo[]>>();
+                 var componentFields = new Dictionary<Component, FieldInfo[]>();
+                 
+                 foreach (var go in components.Keys)
+                 {
+                     foreach (var component in components[go]){
+                         var publicFields = component.GetType().GetFields().Where((field) =>
+                             field.IsPublic && field.FieldType != typeof(Single) &&
+                             (field.FieldType == typeof(int) || field.FieldType == typeof(double)
+                                                             || field.FieldType == typeof(float) ||
+                                                             field.FieldType == typeof(bool) ||
+                                                             field.FieldType == typeof(string) ||
+                                                             field.FieldType == typeof(char))).ToArray();
+
+                         if (!componentFields.ContainsKey(component))
+                         {
+                             componentFields.Add(component, publicFields);
+                         }
                      }
+                     gameobjectComponents.Add(go, componentFields);
                  }
 
-                 var fields = new Dictionary<Type, FieldInfo[]>();
-                 foreach (var component in components)
+                 foreach (var go in gameobjectComponents.Keys)
                  {
-                     var publicFields = component.GetType().GetFields().Where((field) =>
-                         field.IsPublic &&
-                         (field.FieldType == typeof(int) ||  field.FieldType == typeof(double)
-                         ||  field.FieldType == typeof(float) ||  field.FieldType == typeof(bool) ||
-                         field.FieldType == typeof(string) ||  field.FieldType == typeof(char))).ToArray();
-
-                     if (!fields.ContainsKey(component.GetType()))
+                     foreach (var component in gameobjectComponents[go].Keys)
                      {
-                         fields.Add(component.GetType(), publicFields);
-                     }
-                 }
-
-                 foreach (var key in fields.Keys.ToArray())
-                 {
-                     foreach (var type in fields[key])
-                     {
-                         Debug.Log(key + " : " + type + " : " + type.FieldType);
+                         foreach (var field in gameobjectComponents[go][component])
+                         {
+                             object newobj = null;
+                             Debug.Log($"{go} : {component} : {field} -> " +
+                                       $"{field.GetValue(component)}");
+                         }
                      }
                  }
             }
