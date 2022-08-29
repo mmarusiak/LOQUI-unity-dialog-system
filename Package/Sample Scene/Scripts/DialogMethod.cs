@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class DialogMethod : MonoBehaviour
 {
+    public int testInt;
     public void Welcome(object args)
     {
         object[] arrargs = (object[]) args;

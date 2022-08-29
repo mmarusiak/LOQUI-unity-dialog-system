@@ -581,8 +581,8 @@ GameObject:
   - component: {fileID: 1379098351}
   - component: {fileID: 1379098350}
   - component: {fileID: 1379098349}
-  - component: {fileID: 1379098353}
   - component: {fileID: 1379098354}
+  - component: {fileID: 1379098355}
   m_Layer: 0
   m_Name: TestAI
   m_TagString: Untagged
@@ -668,7 +668,19 @@ Transform:
   m_Father: {fileID: 1697678106}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1379098353
+--- !u!114 &1379098354
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1379098347}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea09db58b9d8fcde0b94cf10d8a5be49, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1379098355
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -681,21 +693,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   DialogNodes:
-  - Title: Welcome
-    Text: Hello man.
+  - Title: Hello ai
+    Text: Hello.
     WindowID: 0
     NodeRect:
       serializedVersion: 2
-      x: 449
-      y: 242.5
+      x: 374
+      y: 159
       width: 100
       height: 100
     DialogNodeType: 0
-    DialogTextAudio: {fileID: 0}
+    DialogTextAudio: {fileID: 8300000, guid: e253e27120faad80abbca25f2cb3fb4a, type: 3}
     MethodName: Welcome
     MethodArguments:
     - ArgType: 0
-      StringArg: Welcome
+      StringArg: test string
       IntArg: 0
       DoubleArg: 0
       FloatArg: 0
@@ -714,17 +726,17 @@ MonoBehaviour:
       BoolArg: 0
     LinkedNodesChance: 
     LinkedIds: 01000000
-  - Title: Hi by player
-    Text: Hi.
+  - Title: Hi player
+    Text: Hi!
     WindowID: 1
     NodeRect:
       serializedVersion: 2
-      x: 452
-      y: 599.5
+      x: 447
+      y: 498
       width: 100
       height: 100
     DialogNodeType: 1
-    DialogTextAudio: {fileID: 0}
+    DialogTextAudio: {fileID: 8300000, guid: 00950cab3d0b267b4bcaf85f30bca82e, type: 3}
     MethodName: 
     MethodArguments: []
     LinkedNodesChance: 
@@ -734,18 +746,6 @@ MonoBehaviour:
   TextDisplaySpeed: 20
   MultipleInteractions: 1
   DialogSystemInfo: {fileID: 0}
---- !u!114 &1379098354
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1379098347}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ea09db58b9d8fcde0b94cf10d8a5be49, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1438662131
 GameObject:
   m_ObjectHideFlags: 0

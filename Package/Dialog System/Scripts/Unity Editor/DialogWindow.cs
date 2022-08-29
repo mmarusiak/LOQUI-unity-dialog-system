@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using UnityEditor;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -15,7 +17,7 @@ public class DialogWindow : EditorWindow
         _customDropDownShown = false;
     private string _newNodeTitle = "", _newNodeText = "", _audioClipName = "";
     private int _selectedNodeType = -1, _selectedActor = -1, _selectedArgumentType = -1, _boolArgument = -1, 
-        _lastTouchedWindow = -1;
+        _lastTouchedWindow = -1, _selectedComponent, _selectedVariable;
     private float _inspectorWidth = 140;
     private object _argument = "";
 
@@ -116,6 +118,7 @@ public class DialogWindow : EditorWindow
             if (dialogActor != allGameObjects[_selectedActor])
             {
                 dialogActor = allGameObjects[_selectedActor];
+                _dialogSystemInfo.actorID = dialogActor.GetInstanceID();
                 AssignDialogController();
             }
         }
@@ -283,6 +286,68 @@ public class DialogWindow : EditorWindow
             
             GUI.Label(new Rect(position.width - _inspectorWidth + 10, 20, _inspectorWidth, 40), 
                dialogActor.name, goNameStyle);
+
+            // Start nodes
+            List<DialogNode> startNodes = new List<DialogNode>();
+            List<int> linkedIDs = new List<int>();
+            
+            foreach (var node in _dialogController.DialogNodes)
+            {
+                foreach (var id in node.LinkedIds)
+                    linkedIDs.Add(id);
+            }
+
+            foreach (var node in _dialogController.DialogNodes)
+            {
+                if (!linkedIDs.Contains(node.WindowID) && node.LinkedIds.Count > 0)
+                {
+                    startNodes.Add(node);
+                }
+            }
+
+
+            int startY = 80;
+            if (startNodes.Count > 1)
+            {
+                 // get all variables
+                 
+                 var allGameObjects = FindObjectsOfType<GameObject>();
+                 var components = new List<Component>();
+                 
+                 foreach (var go in allGameObjects)
+                 {
+                     foreach (var component in go.GetComponents<Component>())
+                     {
+                         if(component is MonoBehaviour)
+                            components.Add(component);
+                     }
+                 }
+
+                 var fields = new Dictionary<Type, FieldInfo[]>();
+                 foreach (var component in components)
+                 {
+                     var publicFields = component.GetType().GetFields().Where((field) =>
+                         field.IsPublic &&
+                         (field.FieldType == typeof(int) ||  field.FieldType == typeof(double)
+                         ||  field.FieldType == typeof(float) ||  field.FieldType == typeof(bool) ||
+                         field.FieldType == typeof(string) ||  field.FieldType == typeof(char))).ToArray();
+
+                     if (!fields.ContainsKey(component.GetType()))
+                     {
+                         fields.Add(component.GetType(), publicFields);
+                     }
+                 }
+
+                 foreach (var key in fields.Keys.ToArray())
+                 {
+                     foreach (var type in fields[key])
+                     {
+                         Debug.Log(key + " : " + type + " : " + type.FieldType);
+                     }
+                 }
+            }
+            
+            
 
             // Title info
             GUI.Label(new Rect(position.width - _inspectorWidth + 10, 80, _inspectorWidth/2 - 20, 20),
