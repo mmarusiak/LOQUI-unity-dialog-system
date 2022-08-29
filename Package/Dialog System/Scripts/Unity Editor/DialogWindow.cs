@@ -286,78 +286,7 @@ public class DialogWindow : EditorWindow
             
             GUI.Label(new Rect(position.width - _inspectorWidth + 10, 20, _inspectorWidth, 40), 
                dialogActor.name, goNameStyle);
-
-            // Start nodes TESTING FOR NOW  
-            List<DialogNode> startNodes = new List<DialogNode>();
-            List<int> linkedIDs = new List<int>();
             
-            foreach (var node in _dialogController.DialogNodes)
-            {
-                foreach (var id in node.LinkedIds)
-                    linkedIDs.Add(id);
-            }
-
-            foreach (var node in _dialogController.DialogNodes)
-            {
-                if (!linkedIDs.Contains(node.WindowID) && node.LinkedIds.Count > 0)
-                {
-                    startNodes.Add(node);
-                }
-            }
-
-
-            int startY = 80;
-            if (startNodes.Count > 1)
-            {
-                 // get all variables
-                 
-                 var allGameObjects = FindObjectsOfType<GameObject>();
-                 var components = new Dictionary<GameObject, Component[]>();
-                 
-                 foreach (var go in allGameObjects)
-                 {
-                     components.Add(go, go.GetComponents<Component>().Where((component) => component is MonoBehaviour
-                     && component.GetType() != typeof(DialogSystemInfo)).ToArray());
-                 }
-                 
-                 var gameobjectComponents = new Dictionary<GameObject, Dictionary<Component, FieldInfo[]>>();
-                 var componentFields = new Dictionary<Component, FieldInfo[]>();
-                 
-                 foreach (var go in components.Keys)
-                 {
-                     foreach (var component in components[go]){
-                         var publicFields = component.GetType().GetFields().Where((field) =>
-                             field.IsPublic && field.FieldType != typeof(Single) &&
-                             (field.FieldType == typeof(int) || field.FieldType == typeof(double)
-                                                             || field.FieldType == typeof(float) ||
-                                                             field.FieldType == typeof(bool) ||
-                                                             field.FieldType == typeof(string) ||
-                                                             field.FieldType == typeof(char))).ToArray();
-
-                         if (!componentFields.ContainsKey(component))
-                         {
-                             componentFields.Add(component, publicFields);
-                         }
-                     }
-                     gameobjectComponents.Add(go, componentFields);
-                 }
-
-                 foreach (var go in gameobjectComponents.Keys)
-                 {
-                     foreach (var component in gameobjectComponents[go].Keys)
-                     {
-                         foreach (var field in gameobjectComponents[go][component])
-                         {
-                             object newobj = null;
-                             Debug.Log($"{go} : {component} : {field} -> " +
-                                       $"{field.GetValue(component)}");
-                         }
-                     }
-                 }
-            }
-            
-            
-
             // Title info
             GUI.Label(new Rect(position.width - _inspectorWidth + 10, 80, _inspectorWidth/2 - 20, 20),
                 "Node title");
