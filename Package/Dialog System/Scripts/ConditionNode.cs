@@ -1,7 +1,9 @@
+using System;
 using System.Linq;
 using System.Reflection;
 using UnityEngine;
 
+[Serializable]
 public class ConditionNode
 {
     public string FieldName;
@@ -27,8 +29,9 @@ public class ConditionNode
         TargetGameObject = (GameObject)typeof(UnityEngine.Object)
             .GetMethod("FindObjectFromInstanceID", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static)
             .Invoke(null, new object[] { TargetGameObjectID });
-        Component = TargetGameObject.GetComponent(ComponentName);
+        
 
+        Component = TargetGameObject.GetComponent(ComponentName);
         var field = Component.GetType().GetFields().Where((field) => field.IsPublic & field.Name == FieldName);
         Field = field.ToArray()[0];
         Debug.Log($"{TargetGameObject.name} : {Component} : {Field} : {Field.GetValue(Component)}");

@@ -286,6 +286,60 @@ public class DialogWindow : EditorWindow
             GUI.Label(new Rect(position.width - _inspectorWidth + 10, 20, _inspectorWidth, 40), 
                dialogActor.name, goNameStyle);
             
+            // Start of dialog conditions selection
+            List<DialogNode> startNodes = new List<DialogNode>();
+            List<int> linkedIds = new List<int>();
+
+            foreach (var node in _dialogController.DialogNodes)
+            {
+                foreach(var id in node.LinkedIds)
+                    linkedIds.Add(id);
+            }
+
+            foreach (var node in _dialogController.DialogNodes)
+            {
+                if (!linkedIds.Contains(node.WindowID) && node.LinkedIds.Count > 0)
+                {
+                    startNodes.Add(node);
+                }
+            }
+
+
+            int startY = 0;
+            if (startNodes.Count > 1)
+            {
+                var allGameObjects = FindObjectsOfType<GameObject>();
+                var fieldNodesList = new List<ConditionNode>();
+
+                foreach (var go in allGameObjects)
+                {
+                    foreach (var component in go.GetComponents<Component>())
+                    {
+                        if (component is MonoBehaviour)
+                        {
+                            foreach (var field in component.GetType().GetFields().Where(
+                                (field) =>
+                                    field.IsPublic &&
+                                    (field.FieldType == typeof(int)
+                                     || field.FieldType == typeof(double)
+                                     || field.FieldType == typeof(float)
+                                     || field.FieldType == typeof(bool)
+                                     || field.FieldType == typeof(string)
+                                     || field.FieldType == typeof(char))).ToArray())
+                            {
+                                fieldNodesList.Add(new ConditionNode(field.Name,
+                                    component.GetType().ToString(), go.GetInstanceID()));
+                            }
+                        }
+                    }
+                }
+                
+                // make popup of all field nodes in the list and system to select it
+            }
+
+
+
+
             // Title info
             GUI.Label(new Rect(position.width - _inspectorWidth + 10, 80, _inspectorWidth/2 - 20, 20),
                 "Node title");
