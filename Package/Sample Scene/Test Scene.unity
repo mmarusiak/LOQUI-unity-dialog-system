@@ -680,6 +680,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ea09db58b9d8fcde0b94cf10d8a5be49, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  testInt: 123
 --- !u!114 &1379098355
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -698,8 +699,8 @@ MonoBehaviour:
     WindowID: 0
     NodeRect:
       serializedVersion: 2
-      x: 374
-      y: 159
+      x: 379
+      y: 329
       width: 100
       height: 100
     DialogNodeType: 0
@@ -731,12 +732,42 @@ MonoBehaviour:
     WindowID: 1
     NodeRect:
       serializedVersion: 2
-      x: 447
-      y: 498
+      x: 427
+      y: 538
       width: 100
       height: 100
     DialogNodeType: 1
     DialogTextAudio: {fileID: 8300000, guid: 00950cab3d0b267b4bcaf85f30bca82e, type: 3}
+    MethodName: 
+    MethodArguments: []
+    LinkedNodesChance: 
+    LinkedIds: 
+  - Title: aaa
+    Text: aa
+    WindowID: 2
+    NodeRect:
+      serializedVersion: 2
+      x: 776
+      y: 287.5
+      width: 100
+      height: 100
+    DialogNodeType: 0
+    DialogTextAudio: {fileID: 0}
+    MethodName: 
+    MethodArguments: []
+    LinkedNodesChance: 
+    LinkedIds: 03000000
+  - Title: sdada
+    Text: sda
+    WindowID: 3
+    NodeRect:
+      serializedVersion: 2
+      x: 881
+      y: 564.5
+      width: 100
+      height: 100
+    DialogNodeType: 1
+    DialogTextAudio: {fileID: 0}
     MethodName: 
     MethodArguments: []
     LinkedNodesChance: 

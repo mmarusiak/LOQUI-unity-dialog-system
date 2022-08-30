@@ -333,8 +333,14 @@ public class DialogWindow : EditorWindow
                         }
                     }
                 }
-                
+
                 // make popup of all field nodes in the list and system to select it
+                List<string> popupTexts = new List<string>();
+                foreach (var fieldNode in fieldNodesList)
+                {
+                    popupTexts.Add(fieldNode.FieldName + " = " + 
+                                   fieldNode.Field.GetValue(fieldNode.Component));
+                }
             }
 
 
