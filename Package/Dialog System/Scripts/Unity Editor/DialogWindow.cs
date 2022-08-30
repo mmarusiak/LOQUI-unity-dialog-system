@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
+using System.Xml.Serialization;
+using Unity.VisualScripting;
 using UnityEditor;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -53,7 +53,6 @@ public class DialogWindow : EditorWindow
 
     private void OnGUI()
     {
-        
         if (_dialogController == null && dialogActor != null)
         {
             _dialogController = dialogActor.GetComponent<DialogController>();

@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -48,6 +47,11 @@ public class DialogController : MonoBehaviour
     }
     void Start()
     {
+        // -- TESTING OF CONDITION THINGY SYSTEM --
+        ConditionNode test = new ConditionNode("testInt", "DialogMethod", this.gameObject.GetInstanceID());
+        
+        
+        
         DialogSystemInfo = GameObject.FindWithTag("GameController").GetComponent<DialogSystemInfo>();
      
         // parent of Game Objects (UI) that doesn't "belong" to choice system
