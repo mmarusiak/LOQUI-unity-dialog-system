@@ -341,25 +341,27 @@ public class DialogWindow : EditorWindow
                     popupTexts.Add(fieldNode.FieldName + " = " + 
                                    fieldNode.Field.GetValue(fieldNode.Component));
                 }
+
+                startY = 300;
             }
 
 
 
 
             // Title info
-            GUI.Label(new Rect(position.width - _inspectorWidth + 10, 80, _inspectorWidth/2 - 20, 20),
+            GUI.Label(new Rect(position.width - _inspectorWidth + 10, 80 + startY, _inspectorWidth/2 - 20, 20),
                 "Node title");
             _dialogController.FindNodeByWindowID(_lastTouchedWindow).Title =
                 GUI.TextField(
-                    new Rect(position.width - _inspectorWidth/2, 80, _inspectorWidth/2 - 10, 20),
+                    new Rect(position.width - _inspectorWidth/2, 80 + startY, _inspectorWidth/2 - 10, 20),
                     _dialogController.FindNodeByWindowID(_lastTouchedWindow).Title, 20);
             
             // Text info
-            GUI.Label(new Rect(position.width - _inspectorWidth + 10, 140, _inspectorWidth/2 - 20, 20),
+            GUI.Label(new Rect(position.width - _inspectorWidth + 10, 140 + startY, _inspectorWidth/2 - 20, 20),
                 "Node text");
            _dialogController.FindNodeByWindowID(_lastTouchedWindow).Text =
                 GUI.TextField(
-                    new Rect(position.width - _inspectorWidth/2, 140, _inspectorWidth/2 - 10, 20),
+                    new Rect(position.width - _inspectorWidth/2, 140 + startY, _inspectorWidth/2 - 10, 20),
                    _dialogController.FindNodeByWindowID(_lastTouchedWindow).Text);
 
            // Audio Clip
@@ -383,12 +385,12 @@ public class DialogWindow : EditorWindow
                boxText = _dialogController.FindNodeByWindowID(_lastTouchedWindow).DialogTextAudio.name;
            }
 
-           GUI.Label(new Rect(position.width - _inspectorWidth + 10, 200, _inspectorWidth/3 - 30, 20),
+           GUI.Label(new Rect(position.width - _inspectorWidth + 10, 200 + startY, _inspectorWidth/3 - 30, 20),
                "Audio clip");
-           GUI.Box(new Rect(position.width - 2 * _inspectorWidth/3 + 10, 202, _inspectorWidth/3 - 30, 20), 
+           GUI.Box(new Rect(position.width - 2 * _inspectorWidth/3 + 10, 202 + startY, _inspectorWidth/3 - 30, 20), 
                boxText);
 
-           if (GUI.Button(new Rect(position.width - _inspectorWidth / 3 + 10, 202, _inspectorWidth / 3 - 30, 20),
+           if (GUI.Button(new Rect(position.width - _inspectorWidth / 3 + 10, 202 + startY, _inspectorWidth / 3 - 30, 20),
                "Set") && audioClips.Count > 0)
            {
                _dialogController.FindNodeByWindowID(_lastTouchedWindow).DialogTextAudio = audioClips[0];
@@ -399,7 +401,7 @@ public class DialogWindow : EditorWindow
            if (_dialogController.FindNodeByWindowID(_lastTouchedWindow).LinkedIds.Count > 1 & _dialogController.FindNodeByWindowID(_lastTouchedWindow).DialogNodeType == DialogNode.NodeType.PlayerNode)
            {
                ypos = 60;
-               GUI.Label(new Rect(position.width - _inspectorWidth + 10, 265, _inspectorWidth - 15, 30), 
+               GUI.Label(new Rect(position.width - _inspectorWidth + 10, 265 + startY, _inspectorWidth - 15, 30), 
                    "Select chance foreach of node \nconnected to: " + _dialogController.FindNodeByWindowID(_lastTouchedWindow).Title);
                
                while (_dialogController.FindNodeByWindowID(_lastTouchedWindow).LinkedNodesChance.Count <
@@ -414,17 +416,19 @@ public class DialogWindow : EditorWindow
                    {
                        ypos += 60;
                    }
-                   GUI.Label(new Rect(position.width + 10 - _inspectorWidth/2 * (i%2 + 1), 175 + ypos, _inspectorWidth/3, 30), 
+                   GUI.Label(new Rect(position.width + 10 - _inspectorWidth/2 * (i%2 + 1), 175 + ypos + startY, _inspectorWidth/3, 30), 
                        _dialogController.FindNodeByWindowID(_dialogController.FindNodeByWindowID(_lastTouchedWindow).LinkedIds[i]).Title);
 
-                   int.TryParse(GUI.TextField(new Rect(position.width + 10 - _inspectorWidth / 2 * (i % 2 + 1), 205 + ypos,
+                   int.TryParse(GUI.TextField(new Rect(position.width + 10 - _inspectorWidth / 2 * (i % 2 + 1), 205 + ypos + startY,
                            _inspectorWidth / 3, 30), _dialogController.FindNodeByWindowID(_lastTouchedWindow).LinkedNodesChance[i].ToString()), 
                        out var newChance);
 
                    _dialogController.FindNodeByWindowID(_lastTouchedWindow).LinkedNodesChance[i] = newChance;
                }
            }
-           
+
+           // just to make stuff easier, to not put startY in every line that contains y axis related stuff
+           ypos += startY;
            
            // Method Info
            GUI.Label(new Rect(position.width - _inspectorWidth + 10, 
