@@ -33,8 +33,7 @@ public class ConditionNode
 
         Component = TargetGameObject.GetComponent(ComponentName);
         var field = Component.GetType().GetFields().Where((field) => field.IsPublic & field.Name == FieldName);
-        Field = field.ToArray()[0];
-        Debug.Log($"{TargetGameObject.name} : {Component} : {Field} : {Field.GetValue(Component)}");
+        Field = field.ToArray()[0]; 
     }
 
 }

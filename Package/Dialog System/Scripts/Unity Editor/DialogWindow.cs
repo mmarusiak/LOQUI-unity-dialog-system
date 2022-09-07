@@ -196,10 +196,12 @@ public class DialogWindow : EditorWindow
             Color oldColor = GUI.color;
             GUI.color = _colorPallete[(int) _dialogController.DialogNodes[i].DialogNodeType];
             _dialogController.DialogNodes[i].NodeRect = GUI.Window(i, _dialogController.DialogNodes[i].NodeRect,
-                    WindowFunction, "");
+                    WindowFunction, _dialogController.DialogNodes[i].Title);
             GUI.color = oldColor;
         }
         EndWindows();
+        
+        
         
         Handles.BeginGUI();
         List<DialogNode[]> linkednodes = LinkedNodes();
@@ -228,7 +230,7 @@ public class DialogWindow : EditorWindow
                 new Rect
                 (
                     pair[1].NodeRect.center.x - _dialogSystemInfo.ArrowSize/2, 
-                    pair[1].NodeRect.y - 2, 
+                    pair[1].NodeRect.y - 8, 
                     _dialogSystemInfo.ArrowSize,
                     _dialogSystemInfo.ArrowSize), _dialogSystemInfo.ArrowTexture, ScaleMode.ScaleToFit);
         }
@@ -306,7 +308,7 @@ public class DialogWindow : EditorWindow
 
 
             int startY = 0;
-            if (startNodes.Count > 1)
+            if (startNodes.Count > 1 && startNodes.Contains(_dialogController.FindNodeByWindowID(_lastTouchedWindow)))
             {
                 var allGameObjects = FindObjectsOfType<GameObject>();
                 var fieldNodesList = new List<ConditionNode>();
@@ -342,6 +344,12 @@ public class DialogWindow : EditorWindow
                                    fieldNode.Field.GetValue(fieldNode.Component));
                 }
 
+                GUI.Label(new Rect(position.width - 2 * _inspectorWidth / 3 + 10, 80, _inspectorWidth/2 - 20, 20),
+                    "Choose start of dialog by:");
+                EditorGUI.Popup(
+                    new Rect(position.width - 2 * _inspectorWidth / 3 + 30, 100, _inspectorWidth / 3 - 30, 20),
+                    _boolArgument, new[] {"Random", "Condition"});
+                
                 startY = 300;
             }
 
@@ -692,5 +700,4 @@ public class DialogWindow : EditorWindow
         result.Apply();
         return result;
     }
-
 }
