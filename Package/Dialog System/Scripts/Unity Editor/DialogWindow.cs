@@ -16,7 +16,7 @@ public class DialogWindow : EditorWindow
         _destroyLinksMode = false,
         _customDropDownShown = false;
     private string _newNodeTitle = "", _newNodeText = "", _audioClipName = "";
-    private int _selectedNodeType = -1, _selectedActor = -1, _selectedArgumentType = -1, _boolArgument = -1, 
+    private int _selectedNodeType = -1, _selectedStartDialogType = -1, _selectedActor = -1, _selectedArgumentType = -1, _boolArgument = -1, 
         _lastTouchedWindow = -1, _selectedComponent, _selectedVariable;
     private float _inspectorWidth = 140;
     private object _argument = "";
@@ -310,9 +310,10 @@ public class DialogWindow : EditorWindow
             int startY = 0;
             if (startNodes.Count > 1 && startNodes.Contains(_dialogController.FindNodeByWindowID(_lastTouchedWindow)))
             {
+                // list of all conditions, that can be serialized
                 var allGameObjects = FindObjectsOfType<GameObject>();
                 var fieldNodesList = new List<ConditionNode>();
-
+                
                 foreach (var go in allGameObjects)
                 {
                     foreach (var component in go.GetComponents<Component>())
@@ -344,12 +345,33 @@ public class DialogWindow : EditorWindow
                                    fieldNode.Field.GetValue(fieldNode.Component));
                 }
 
-                GUI.Label(new Rect(position.width - 2 * _inspectorWidth / 3 + 10, 80, _inspectorWidth/2 - 20, 20),
+                // select how the start of dialog will be chosen - by random or by condition
+                GUI.Label(new Rect(position.width - 2 * _inspectorWidth / 3 + 5, 80, _inspectorWidth/2 - 20, 20),
                     "Choose start of dialog by:");
-                EditorGUI.Popup(
+                _selectedStartDialogType = EditorGUI.Popup(
                     new Rect(position.width - 2 * _inspectorWidth / 3 + 30, 100, _inspectorWidth / 3 - 30, 20),
-                    _boolArgument, new[] {"Random", "Condition"});
-                
+                    _selectedStartDialogType, new[] {"Random", "Condition"});
+
+                if (_selectedStartDialogType > -1)
+                {
+                    // store value in dialog controller
+                    _dialogController.randomDialogStart = _selectedStartDialogType == 1;
+
+                    // if start will be selected by random
+                    if (_dialogController.randomDialogStart)
+                    {
+                        // make panel with all possible starts and text fields to set percentage chance to it
+                    }
+                    
+                    // if start will be selected by condition
+                    else
+                    {
+                        // make two rows of panels, one that meets condition, second that doesn't
+                        // if more than two starts of dialogs possible, add percentage set-up option
+                        //  to nodes in rows that contains more than one node
+                    }
+                }
+
                 startY = 300;
             }
 

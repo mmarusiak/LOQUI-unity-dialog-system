@@ -21,6 +21,8 @@ public class DialogController : MonoBehaviour
     [HideInInspector]
     public DialogSystemInfo DialogSystemInfo;
 
+    [HideInInspector] public bool randomDialogStart;
+    
     private GameObject mainUIParent;
     private GameObject choiceUIParent;
     private bool textShown = false;
