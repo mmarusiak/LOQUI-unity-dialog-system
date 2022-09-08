@@ -195,6 +195,7 @@ public class DialogController : MonoBehaviour
             }
         }
         
+        // start of dialog, to add dialog start options selection...
         if (interactable && !quitFlag)
         {
             if (DialogSystemInfo.Is3D)
