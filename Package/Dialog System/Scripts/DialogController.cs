@@ -21,9 +21,9 @@ public class DialogController : MonoBehaviour
     [HideInInspector]
     public DialogSystemInfo DialogSystemInfo;
 
-    [HideInInspector] public bool randomDialogStart;
+    [HideInInspector] public int dialogStartType = -1;
     [HideInInspector] public ConditionNode selectedCondition;
-    [HideInInspector] public int conditionOption;
+    [HideInInspector] public int conditionOption = -1;
     [HideInInspector] public List<DialogNode> onConditionMet;
     [HideInInspector] public List<DialogNode> onConditionDoesntMet;
 

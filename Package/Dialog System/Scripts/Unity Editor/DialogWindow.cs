@@ -347,19 +347,24 @@ public class DialogWindow : EditorWindow
                 }
 
                 // select how the start of dialog will be chosen - by random or by condition
-                GUI.Label(new Rect(position.width - 2 * _inspectorWidth / 3 + 5, 80, _inspectorWidth/2 - 20, 20),
-                    "Choose start of dialog by:");
+                _selectedStartDialogType = _dialogController.dialogStartType;
+                
+                GUIStyle centerLabel = new GUIStyle(GUI.skin.label);
+                centerLabel.alignment = TextAnchor.MiddleCenter;
+                
+                GUI.Label(new Rect(position.width - _inspectorWidth, 80, _inspectorWidth, 20),
+                    "Choose start of dialog by:", centerLabel);
                 _selectedStartDialogType = EditorGUI.Popup(
-                    new Rect(position.width - 2 * _inspectorWidth / 3 + 30, 100, _inspectorWidth / 3 - 30, 20),
+                    new Rect(position.width - _inspectorWidth/2 - _inspectorWidth/6 + 15, 110, _inspectorWidth / 3 - 30, 20),
                     _selectedStartDialogType, new[] {"Random", "Condition"});
 
                 if (_selectedStartDialogType > -1)
                 {
                     // store value in dialog controller
-                    _dialogController.randomDialogStart = _selectedStartDialogType == 0;
+                    _dialogController.dialogStartType = _selectedStartDialogType;
 
                     // if start will be selected by random
-                    if (_dialogController.randomDialogStart)
+                    if (_dialogController.dialogStartType == 0)
                     {
                         // make panel with all possible starts and text fields to set percentage chance to it
                     }
@@ -367,8 +372,21 @@ public class DialogWindow : EditorWindow
                     // if start will be selected by condition
                     else
                     {
-                        EditorGUI.Popup(new Rect(position.width - 2 * _inspectorWidth / 3 + 30, 140, _inspectorWidth / 3 - 30, 20),
-                            0, popupTexts.ToArray());
+                        _dialogController.conditionOption = EditorGUI.Popup(new Rect(position.width - _inspectorWidth / 2 - _inspectorWidth / 6, 140, _inspectorWidth / 3, 20),
+                            _dialogController.conditionOption, popupTexts.ToArray());
+                        if (_dialogController.conditionOption > -1)
+                        {
+                            _dialogController.selectedCondition = fieldNodesList[_dialogController.conditionOption];
+                            var type = _dialogController.selectedCondition.Field.FieldType;
+                            if (type == typeof(string) || type == typeof(bool) || type == typeof(char))
+                            {
+                                // only equals
+                            }
+                            else
+                            {
+                                // also "numbers" so we need to choose if we want if something is equal, greater etc.
+                            }
+                        }
                         // make two rows of panels, one that meets condition, second that doesn't
                         // if more than two starts of dialogs possible, add percentage set-up option
                         //  to nodes in rows that contains more than one node
