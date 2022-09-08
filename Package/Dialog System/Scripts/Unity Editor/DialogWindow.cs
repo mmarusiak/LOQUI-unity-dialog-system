@@ -341,8 +341,9 @@ public class DialogWindow : EditorWindow
                 List<string> popupTexts = new List<string>();
                 foreach (var fieldNode in fieldNodesList)
                 {
-                    popupTexts.Add(fieldNode.FieldName + " = " + 
-                                   fieldNode.Field.GetValue(fieldNode.Component));
+                    popupTexts.Add(  fieldNode.FieldName + " = " + 
+                                   fieldNode.Field.GetValue(fieldNode.Component) 
+                                   + " | " + fieldNode.TargetGameObject.name + " > " + fieldNode.ComponentName);
                 }
 
                 // select how the start of dialog will be chosen - by random or by condition
@@ -355,7 +356,7 @@ public class DialogWindow : EditorWindow
                 if (_selectedStartDialogType > -1)
                 {
                     // store value in dialog controller
-                    _dialogController.randomDialogStart = _selectedStartDialogType == 1;
+                    _dialogController.randomDialogStart = _selectedStartDialogType == 0;
 
                     // if start will be selected by random
                     if (_dialogController.randomDialogStart)
@@ -366,6 +367,8 @@ public class DialogWindow : EditorWindow
                     // if start will be selected by condition
                     else
                     {
+                        EditorGUI.Popup(new Rect(position.width - 2 * _inspectorWidth / 3 + 30, 140, _inspectorWidth / 3 - 30, 20),
+                            0, popupTexts.ToArray());
                         // make two rows of panels, one that meets condition, second that doesn't
                         // if more than two starts of dialogs possible, add percentage set-up option
                         //  to nodes in rows that contains more than one node

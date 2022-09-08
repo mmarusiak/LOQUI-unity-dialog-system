@@ -22,7 +22,11 @@ public class DialogController : MonoBehaviour
     public DialogSystemInfo DialogSystemInfo;
 
     [HideInInspector] public bool randomDialogStart;
-    
+    [HideInInspector] public ConditionNode selectedCondition;
+    [HideInInspector] public int conditionOption;
+    [HideInInspector] public List<DialogNode> onConditionMet;
+    [HideInInspector] public List<DialogNode> onConditionDoesntMet;
+
     private GameObject mainUIParent;
     private GameObject choiceUIParent;
     private bool textShown = false;
