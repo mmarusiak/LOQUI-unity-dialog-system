@@ -75,7 +75,7 @@ public class DialogController : MonoBehaviour
         // parent of Game Objects (UI) that "belongs" to choice system
         choiceUIParent = GameObject.Find("PlayerChoiceButtons");
 
-        // get windowID of first node in dialog
+        // get windowID of first node in dialog TO IMPLEMENT DIALOG START OPTIONS
         try
         {
             foreach (var node in DialogNodes)
@@ -195,7 +195,6 @@ public class DialogController : MonoBehaviour
             }
         }
         
-        // start of dialog, to add dialog start options selection...
         if (interactable && !quitFlag)
         {
             if (DialogSystemInfo.Is3D)
