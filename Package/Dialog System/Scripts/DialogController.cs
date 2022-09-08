@@ -27,6 +27,9 @@ public class DialogController : MonoBehaviour
     [HideInInspector] public List<DialogNode> onConditionMet;
     [HideInInspector] public List<DialogNode> onConditionDoesntMet;
 
+    // for numerical conditions only: 0 - equals to [value]; 1 - greater than [value]; 2 - less than [value];
+    [HideInInspector] public int equationType = -1;
+    
     [HideInInspector] public string strConditionValue;
     [HideInInspector] public char charConditionValue;
     [HideInInspector] public int boolConditionValue = - 1; // 0 - false, 1 - true

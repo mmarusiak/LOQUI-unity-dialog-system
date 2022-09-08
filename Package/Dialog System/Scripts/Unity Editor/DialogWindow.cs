@@ -404,6 +404,30 @@ public class DialogWindow : EditorWindow
                             }
                             else
                             {
+                                _dialogController.equationType = EditorGUI.Popup(new Rect(position.width - 2*_inspectorWidth / 3 - _inspectorWidth / 6, 170, _inspectorWidth / 3, 20),
+                                    _dialogController.equationType, new []{"Equals to: ", "Greater than: ", "Less than:"});
+                                if (type == typeof(float))
+                                {
+                                    bool isFloat = float.TryParse(GUI.TextField(
+                                        new Rect(position.width - _inspectorWidth / 3 - _inspectorWidth / 6, 170,
+                                            _inspectorWidth / 3, 20),
+                                        _dialogController.floatConditionValue.ToString()), out var newVal);
+                                    _dialogController.floatConditionValue = isFloat ? newVal : _dialogController.floatConditionValue;
+                                }else if (type == typeof(int))
+                                {
+                                    bool isInt = int.TryParse(GUI.TextField(
+                                        new Rect(position.width - _inspectorWidth / 3 - _inspectorWidth / 6, 170,
+                                            _inspectorWidth / 3, 20),
+                                        _dialogController.floatConditionValue.ToString()), out var newVal);
+                                    _dialogController.intConditionValue = isInt ? newVal : _dialogController.intConditionValue;
+                                }else if (type == typeof(double))
+                                {
+                                    bool isDouble = double.TryParse(GUI.TextField(
+                                        new Rect(position.width - _inspectorWidth / 3 - _inspectorWidth / 6, 170,
+                                            _inspectorWidth / 3, 20),
+                                        _dialogController.floatConditionValue.ToString()), out var newVal);
+                                    _dialogController.doubleConditionValue = isDouble ? newVal : _dialogController.doubleConditionValue;
+                                }
                                 // also "numbers" so we need to choose if we want if something is equal, greater etc.
                             }
                         }
@@ -413,7 +437,7 @@ public class DialogWindow : EditorWindow
                     }
                 }
 
-                startY = 300;
+                startY = 150;
             }
 
 
