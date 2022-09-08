@@ -27,6 +27,13 @@ public class DialogController : MonoBehaviour
     [HideInInspector] public List<DialogNode> onConditionMet;
     [HideInInspector] public List<DialogNode> onConditionDoesntMet;
 
+    [HideInInspector] public string strConditionValue;
+    [HideInInspector] public char charConditionValue;
+    [HideInInspector] public int boolConditionValue = - 1; // 0 - false, 1 - true
+    [HideInInspector] public int intConditionValue;
+    [HideInInspector] public double doubleConditionValue;
+    [HideInInspector] public float floatConditionValue;
+
     private GameObject mainUIParent;
     private GameObject choiceUIParent;
     private bool textShown = false;

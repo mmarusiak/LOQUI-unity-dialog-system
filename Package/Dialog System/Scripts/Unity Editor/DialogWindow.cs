@@ -380,7 +380,27 @@ public class DialogWindow : EditorWindow
                             var type = _dialogController.selectedCondition.Field.FieldType;
                             if (type == typeof(string) || type == typeof(bool) || type == typeof(char))
                             {
-                                // only equals
+                                if (type == typeof(bool))
+                                {
+                                    GUI.Label(new Rect(position.width - _inspectorWidth, 170, _inspectorWidth - 100, 20),
+                                        "If is equal to:", centerLabel);
+                                    _dialogController.boolConditionValue = EditorGUI.Popup(new Rect(position.width - _inspectorWidth / 3 - _inspectorWidth / 6, 170, _inspectorWidth / 3, 20),
+                                        _dialogController.boolConditionValue, new []{"False","True"});
+                                }
+                                else if (type == typeof(string))
+                                {
+                                    GUI.Label(new Rect(position.width - _inspectorWidth, 170, _inspectorWidth - 100, 20),
+                                        "If is equal to:", centerLabel);
+                                    _dialogController.strConditionValue = GUI.TextField(new Rect(position.width - _inspectorWidth / 3 - _inspectorWidth / 6, 170, _inspectorWidth / 3, 20),
+                                        _dialogController.strConditionValue);
+                                }
+                                else
+                                {
+                                    GUI.Label(new Rect(position.width - _inspectorWidth, 170, _inspectorWidth - 100, 20),
+                                        "If is equal to:", centerLabel);
+                                    _dialogController.charConditionValue = GUI.TextField(new Rect(position.width - _inspectorWidth / 3 - _inspectorWidth / 6, 170, _inspectorWidth / 3, 20),
+                                        _dialogController.charConditionValue.ToString(), 1)[0];
+                                }
                             }
                             else
                             {
