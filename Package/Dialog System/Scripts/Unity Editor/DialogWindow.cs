@@ -324,7 +324,7 @@ public class DialogWindow : EditorWindow
                 {
                     foreach (var component in go.GetComponents<Component>())
                     {
-                        if (component is MonoBehaviour)
+                        if (component is MonoBehaviour && component.GetType().ToString() != "DialogSystemInfo")
                         {
                             foreach (var field in component.GetType().GetFields().Where(
                                 (field) =>
@@ -443,7 +443,7 @@ public class DialogWindow : EditorWindow
                     }
                 }
 
-                startY = 150;
+                startY = 300;
             }
 
 
