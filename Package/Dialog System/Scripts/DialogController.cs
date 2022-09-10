@@ -30,14 +30,14 @@ public class DialogController : MonoBehaviour
     public List<DialogNode> onConditionDoesntMet;
 
     // for numerical conditions only: 0 - equals to [value]; 1 - greater than [value]; 2 - less than [value];
-    [HideInInspector] public int equationType = -1;
+    public int equationType = -1;
     
-    [HideInInspector] public string strConditionValue;
-    [HideInInspector] public char charConditionValue;
-    [HideInInspector] public int boolConditionValue = - 1; // 0 - false, 1 - true
-    [HideInInspector] public int intConditionValue;
-    [HideInInspector] public double doubleConditionValue;
-    [HideInInspector] public float floatConditionValue;
+    public string strConditionValue;
+    public char charConditionValue;
+    public int boolConditionValue = - 1; // 0 - false, 1 - true
+    public int intConditionValue;
+    public double doubleConditionValue;
+    public float floatConditionValue;
 
     private GameObject mainUIParent;
     private GameObject choiceUIParent;

@@ -386,25 +386,24 @@ public class DialogWindow : EditorWindow
                             var type = _dialogController.selectedCondition.Field.FieldType;
                             if (type == typeof(string) || type == typeof(bool) || type == typeof(char))
                             {
+                                GUI.Label(new Rect(position.width - 2 * _inspectorWidth / 3 - 100, 180, 100, 20),
+                                    "If is equal to", centerLabel);
+                                GUI.Label(new Rect(position.width - _inspectorWidth / 3, 180, 100, 20),
+                                    "If isn't equal to", centerLabel);
+                                
                                 if (type == typeof(bool))
                                 {
-                                    GUI.Label(new Rect(position.width - _inspectorWidth, 170, _inspectorWidth - 100, 20),
-                                        "If is equal to:", centerLabel);
-                                    _dialogController.boolConditionValue = EditorGUI.Popup(new Rect(position.width - _inspectorWidth / 3 - _inspectorWidth / 6, 170, _inspectorWidth / 3, 20),
+                                    _dialogController.boolConditionValue = EditorGUI.Popup(new Rect(position.width - _inspectorWidth / 2 - _inspectorWidth / 6, 170, _inspectorWidth / 3, 20),
                                         _dialogController.boolConditionValue, new []{"False","True"});
                                 }
                                 else if (type == typeof(string))
                                 {
-                                    GUI.Label(new Rect(position.width - _inspectorWidth, 170, _inspectorWidth - 100, 20),
-                                        "If is equal to:", centerLabel);
-                                    _dialogController.strConditionValue = GUI.TextField(new Rect(position.width - _inspectorWidth / 3 - _inspectorWidth / 6, 170, _inspectorWidth / 3, 20),
+                                    _dialogController.strConditionValue = GUI.TextField(new Rect(position.width - _inspectorWidth / 2 - _inspectorWidth / 6, 170, _inspectorWidth / 3, 20),
                                         _dialogController.strConditionValue);
                                 }
                                 else
                                 {
-                                    GUI.Label(new Rect(position.width - _inspectorWidth, 170, _inspectorWidth - 100, 20),
-                                        "If is equal to:", centerLabel);
-                                    _dialogController.charConditionValue = GUI.TextField(new Rect(position.width - _inspectorWidth / 3 - _inspectorWidth / 6, 170, _inspectorWidth / 3, 20),
+                                    _dialogController.charConditionValue = GUI.TextField(new Rect(position.width - _inspectorWidth / 2 - _inspectorWidth / 6, 170, _inspectorWidth / 3, 20),
                                         _dialogController.charConditionValue.ToString(), 1)[0];
                                 }
                             }
@@ -412,6 +411,17 @@ public class DialogWindow : EditorWindow
                             {
                                 _dialogController.equationType = EditorGUI.Popup(new Rect(position.width - 2*_inspectorWidth / 3 - _inspectorWidth / 6, 170, _inspectorWidth / 3, 20),
                                     _dialogController.equationType, new []{"Equals to: ", "Greater than: ", "Less than:"});
+
+                                GUIStyle symbolStyle = new GUIStyle(GUI.skin.label);
+                                symbolStyle.fontStyle = FontStyle.Bold;
+                                symbolStyle.fontSize = 18;
+                                symbolStyle.alignment = TextAnchor.MiddleCenter;
+                                
+                                GUI.Label(new Rect(position.width - 2 * _inspectorWidth / 3 - 100, 190, 100, 20),
+                                    "✓", symbolStyle);
+                                GUI.Label(new Rect(position.width - _inspectorWidth / 3, 190, 100, 20),
+                                    "x", symbolStyle);
+                                
                                 if (type == typeof(float))
                                 {
                                     bool isFloat = float.TryParse(GUI.TextField(
@@ -437,13 +447,62 @@ public class DialogWindow : EditorWindow
                                 // also "numbers" so we need to choose if we want if something is equal, greater etc.
                             }
                         }
+
+                        // if dev enters first time, make conditions met lists by default by adding nodes to each of the list
+                        if (_dialogController.onConditionMet.Count == 0 && _dialogController.onConditionDoesntMet.Count != startNodes.Count
+                        || _dialogController.onConditionDoesntMet.Count == 0 && _dialogController.onConditionMet.Count != startNodes.Count)
+                        {
+                            _dialogController.onConditionMet = new List<DialogNode>();
+                            _dialogController.onConditionDoesntMet = new List<DialogNode>();
+
+                            foreach (var node in startNodes)
+                            {
+                                if(_dialogController.onConditionMet.Count > _dialogController.onConditionDoesntMet.Count)
+                                    _dialogController.onConditionDoesntMet.Add(node);
+                                else
+                                    _dialogController.onConditionMet.Add(node);
+                            }
+                        }
+                        
+                        // two rows of nodes, one that met conditions and second one that doesn't
+                        // node will be played if condition is met of if isn't
+                        // also percent chances should be added if nodes count for one row will be more than one
+                      
+                        for (int i = 0; i < _dialogController.onConditionMet.Count; i ++)
+                        {
+                            if (GUI.Button(new Rect(position.width - 2 * _inspectorWidth / 3 - 100, 190 +
+                                    (i + 1) * 25, 100, 20),
+                                _dialogController.onConditionMet[i].Title + " > "))
+                            {
+                                _dialogController.onConditionDoesntMet.Add(_dialogController.onConditionMet[i]);
+                                _dialogController.onConditionMet.RemoveAt(i);
+                            }
+                        }
+                        
+                        
+                        foreach (var node in _dialogController.onConditionDoesntMet)
+                        {
+                            if (GUI.Button(new Rect(position.width - _inspectorWidth / 3, 190 +
+                                    (_dialogController.onConditionDoesntMet.IndexOf(node) + 1) * 25, 100, 20),
+                                " < " + node.Title))
+                            {
+                                _dialogController.onConditionMet.Add(node);
+                                _dialogController.onConditionDoesntMet.RemoveAt(_dialogController.onConditionDoesntMet.IndexOf(node));
+                                break;
+                            }
+                        }
+
                         // make two rows of panels, one that meets condition, second that doesn't
                         // if more than two starts of dialogs possible, add percentage set-up option
                         //  to nodes in rows that contains more than one node
                     }
                 }
 
-                startY = 300;
+                startY = (_dialogController.onConditionDoesntMet.Count - 1) * 25 + 190;
+                if (_dialogController.onConditionMet.Count > _dialogController.onConditionDoesntMet.Count)
+                {
+                    startY = (_dialogController.onConditionMet.Count - 1) * 25 + 190;
+                }
             }
 
 
