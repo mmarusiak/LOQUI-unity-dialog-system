@@ -20,12 +20,14 @@ public class DialogController : MonoBehaviour
     
     [HideInInspector]
     public DialogSystemInfo DialogSystemInfo;
-
-    [HideInInspector] public int dialogStartType = -1;
-    [HideInInspector] public ConditionNode selectedCondition;
-    [HideInInspector] public int conditionOption = -1;
-    [HideInInspector] public List<DialogNode> onConditionMet;
-    [HideInInspector] public List<DialogNode> onConditionDoesntMet;
+    
+    [Space(20)] 
+    [Header("Selected from inspector values, do not change anything!")]
+    public int dialogStartType = -1;
+    public ConditionNode selectedCondition;
+    public int conditionOption = -1;
+    public List<DialogNode> onConditionMet;
+    public List<DialogNode> onConditionDoesntMet;
 
     // for numerical conditions only: 0 - equals to [value]; 1 - greater than [value]; 2 - less than [value];
     [HideInInspector] public int equationType = -1;

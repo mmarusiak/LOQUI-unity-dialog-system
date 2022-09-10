@@ -194,9 +194,15 @@ public class DialogWindow : EditorWindow
         {
             _dialogController.DialogNodes[i].WindowID = i;
             Color oldColor = GUI.color;
+            
+            GUIStyle windowStyle = new GUIStyle(GUI.skin.window);
+            windowStyle.alignment = TextAnchor.MiddleCenter;
+            windowStyle.normal.textColor = Color.white;
+            windowStyle.fontStyle = FontStyle.Bold;
             GUI.color = _colorPallete[(int) _dialogController.DialogNodes[i].DialogNodeType];
+
             _dialogController.DialogNodes[i].NodeRect = GUI.Window(i, _dialogController.DialogNodes[i].NodeRect,
-                    WindowFunction, _dialogController.DialogNodes[i].Title);
+                    WindowFunction, _dialogController.DialogNodes[i].Title, windowStyle);
             GUI.color = oldColor;
         }
         EndWindows();
@@ -628,10 +634,6 @@ public class DialogWindow : EditorWindow
         GUIStyle labelStyle = new GUIStyle(GUI.skin.label);
         labelStyle.normal.textColor = Color.white;
 
-        GUI.Label(
-            new Rect(0,-30, 100, 100),
-            _dialogController.FindNodeByWindowID(windowID).Title, labelStyle);
-        
         Rect windowRect = _dialogController.FindNodeByWindowID(windowID).NodeRect;
 
         Rect relativeRect = GUIUtility.GUIToScreenRect(new Rect(
