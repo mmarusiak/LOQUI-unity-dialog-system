@@ -29,6 +29,7 @@ For first approach and building your first dialog please check [*docs file*](doc
 ## To do
 * Multiple dialogs trees for one actor - tree will be played depends on condition that will be met;
 * Customizable UI choice section - graphics;
+* Redisign UI for visual dialog editor;
 * Optimize code;
 * Improve sample scene;
 * Improve text wraping on visual editor;
