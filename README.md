@@ -1,5 +1,6 @@
 # LOQUI
 *Developed and tested on Unity 2021.2.0f1 version. Should work on newer/older versions, but not exactly sure about that!*
+
 *in-dev state, not ready for being used as gamedev tool*
 
 Loqui is easy tool for creating dialogs in your game in very simple way with help of documentation. System provides versality of features, but mainly:
