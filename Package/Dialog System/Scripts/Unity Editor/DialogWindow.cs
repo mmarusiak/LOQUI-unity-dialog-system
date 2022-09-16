@@ -498,6 +498,16 @@ public class DialogWindow : EditorWindow
                     }
                 }
 
+                if (_dialogController.onConditionMet.Count > 1)
+                {
+                    // set percent chances to inspector
+                }
+                
+                if (_dialogController.onConditionDoesntMet.Count > 1)
+                {
+                    // set percent chances to inspector
+                }
+
                 startY = (_dialogController.onConditionDoesntMet.Count - 1) * 25 + 190;
                 if (_dialogController.onConditionMet.Count > _dialogController.onConditionDoesntMet.Count)
                 {

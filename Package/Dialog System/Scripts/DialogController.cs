@@ -27,7 +27,9 @@ public class DialogController : MonoBehaviour
     public ConditionNode selectedCondition;
     public int conditionOption = -1;
     public List<DialogNode> onConditionMet;
+    public List<float> metChances; 
     public List<DialogNode> onConditionDoesntMet;
+    public List<float> noMetChances;
 
     // for numerical conditions only: 0 - equals to [value]; 1 - greater than [value]; 2 - less than [value];
     public int equationType = -1;
