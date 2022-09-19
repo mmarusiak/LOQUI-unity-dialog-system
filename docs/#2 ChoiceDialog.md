@@ -1,3 +1,6 @@
+WRITE IT FROM SCRATCH 
+
+
 For making dialog with choice options, you should read this guide.
 First please head to ButtonsChoice prefab. Create here as many empty Game Objects as amount of max buttons you need.
 For example: 
