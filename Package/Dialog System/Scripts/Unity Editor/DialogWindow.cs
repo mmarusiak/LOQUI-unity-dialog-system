@@ -449,8 +449,8 @@ public class DialogWindow : EditorWindow
                         }
 
                         // if dev enters first time, make conditions met lists by default by adding nodes to each of the list
-                        if (_dialogController.onConditionMet.Count == 0 && _dialogController.onConditionDoesntMet.Count != startNodes.Count
-                        || _dialogController.onConditionDoesntMet.Count == 0 && _dialogController.onConditionMet.Count != startNodes.Count)
+                        if ((_dialogController.onConditionMet.Count == 0 && _dialogController.onConditionDoesntMet.Count != startNodes.Count)
+                        || (_dialogController.onConditionDoesntMet.Count == 0 && _dialogController.onConditionMet.Count != startNodes.Count))
                         {
                             _dialogController.onConditionMet = new List<DialogNode>();
                             _dialogController.onConditionDoesntMet = new List<DialogNode>();
