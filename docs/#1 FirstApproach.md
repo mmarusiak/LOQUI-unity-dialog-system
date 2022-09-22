@@ -9,6 +9,7 @@ Every line of dialog is called node - that's just C# class. Node has a lot of at
 - text - just content of this line of code
 - method and arguments - to call method after some line you need to provide name of the method and eventually the arguments for the method
 - chances - if there is more than one AI node connected to single player node you need to specify how rare is each response
+- dialog start type - if there are more than one dialog node that starts the dialog tree (more than one dialog tree), that option will appear and allow you to choose how start dialog node should be chosen (by random or by some condition)
 
 
 ### Prepare the scene
