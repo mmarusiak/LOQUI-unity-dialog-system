@@ -53,6 +53,7 @@ public class DialogWindow : EditorWindow
 
     private void OnGUI()
     {
+        // set dialog controller if isn't set in proper way
         if (_dialogController == null && dialogActor != null)
         {
             _dialogController = dialogActor.GetComponent<DialogController>();
@@ -60,6 +61,8 @@ public class DialogWindow : EditorWindow
         
         _actorCreated = _dialogController != null;
         
+       
+        // get dialog system info, if created
         if (_dialogSystemInfo == null)
         {
             try
@@ -72,9 +75,13 @@ public class DialogWindow : EditorWindow
             }
 
         }
+        
+        // set inspector width and draw show inspector button
         _inspectorWidth = position.width / 4;
         DrawStaticGroup();
         
+        // draw main panel - graphics of nodes and draw inspector if is shown, also set actor id
+        // also draw "create node sectio
         if (_actorCreated)
         {
             _dialogSystemInfo.actorID = dialogActor.GetInstanceID();
@@ -85,11 +92,14 @@ public class DialogWindow : EditorWindow
                 DrawInspector();
             }
         }
+        
+        // if dialog actor not created show create dialog actor message
         else
         {
             DrawActorPanel();
         }
 
+        // custom dropdown on dialog nodes graphics
         if (_customDropDownShown)
         {
             ShowDropDown(_lastTouchedWindow);
@@ -158,6 +168,7 @@ public class DialogWindow : EditorWindow
             _newNodeText = "";
         }
         
+        // if user is creating node, show option textboxes etc.
         if (_creatingNode)
         {
             // Title "box"
@@ -189,6 +200,7 @@ public class DialogWindow : EditorWindow
                 });
         }
         
+        // draw dialog nodes graphics
         BeginWindows();
         for (int i = 0; i < _dialogController.DialogNodes.Count; i++)
         {
@@ -208,7 +220,7 @@ public class DialogWindow : EditorWindow
         EndWindows();
         
         
-        
+        // draw dialog nodes links graphics
         Handles.BeginGUI();
         List<DialogNode[]> linkednodes = LinkedNodes();
         foreach (var pair in linkednodes)
@@ -232,6 +244,7 @@ public class DialogWindow : EditorWindow
                 Handles.DrawBezier(middlePoint, endPoint, tangentPoint[1], tangentPoint[1], _colorPallete[2], null, 6f);
             }
             
+            // draw end arrow
             GUI.DrawTexture(
                 new Rect
                 (
@@ -243,6 +256,7 @@ public class DialogWindow : EditorWindow
         Handles.EndGUI();
     }
 
+    // draw info message about not created dialog controller
     void DrawActorPanel()
     {
         GUIStyle infoStyle = new GUIStyle(GUI.skin.label);
@@ -259,6 +273,7 @@ public class DialogWindow : EditorWindow
         }
     }
 
+    // draw inspector and handle functions of it
     void DrawInspector()
     {
         // Background for inspector
@@ -698,11 +713,9 @@ public class DialogWindow : EditorWindow
         }
     }
 
+    // handle dialog node functions (move, click etc.)
     void WindowFunction (int windowID)
     {
-        GUIStyle labelStyle = new GUIStyle(GUI.skin.label);
-        labelStyle.normal.textColor = Color.white;
-
         Rect windowRect = _dialogController.FindNodeByWindowID(windowID).NodeRect;
 
         Rect relativeRect = GUIUtility.GUIToScreenRect(new Rect(
