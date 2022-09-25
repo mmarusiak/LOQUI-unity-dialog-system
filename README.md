@@ -15,7 +15,7 @@ With this tool you can make dialogs faster, easier and make any changes to them 
 #### Why? 
 Working on such big project during school year made that work boring and pretty hard. Also I couldn't add features in clean way and code was becoming more and more chaotic. Anyway I made this project mainly because I wanted to learn more about creating own tools to Unity, which I did pretty well.
 #### What I can do with this tool?
-So you can basically create simple dialogs with this tool. Limitations are that you can't add more than 1 dialog tree to actor. Also there can be some issuses with changing graphics of buttons in dialog lines with choice.
+So you can basically create simple dialogs with this tool. Limitations are that you can't add more than 1 dialog tree to actor. Also there can be some issuses with changing graphics of buttons in dialog lines with choice. Also you can try to understand my spaghetti and continue with your own. :wink:
 #### What with documentation?
 Basic documentation page for first steps with the tool is done, but I don't see sense of writing another one. 
 #### What will I do now?
