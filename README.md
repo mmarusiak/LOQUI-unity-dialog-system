@@ -19,7 +19,7 @@ So you can basically create simple dialogs with this tool. Limitations are that 
 #### What with documentation?
 Basic documentation page for first steps with the tool is done, but I don't see sense of writing another one. 
 #### What will I do now?
-Probably thing that I always wanted to do. Finally I will be able to create my own game, we will see if it will turn into something more for the first time. :wink:
+Probably thing that I always wanted to do. Finally I will be able to create my own game, we will see if it will turn into something more for the first time.
 
 ## Installation
 *Project not ready for being used as gamedev tool*
