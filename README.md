@@ -11,6 +11,15 @@ Loqui is easy tool for creating dialogs in your game in very simple way with hel
 
 With this tool you can make dialogs faster, easier and make any changes to them a lot quicker.
 
+## Project postponed
+### Why? 
+Working on such big project during school year made that work boring and pretty hard. Also I couldn't add features in clean way and code was becoming more and more chaotic. Anyway I made this project mainly because I wanted to learn more about creating own tools to Unity, which I did pretty well.
+### What I can do with this tool?
+So you can basically create simple dialogs with this tool. Limitations are that you can't add more than 1 dialog tree to actor. Also there can be some issuses with changing graphics of buttons in dialog lines with choice.
+### What with documentation?
+Basic documentation page for first steps with the tool is done, but I don't see sense of writing another one. 
+### What will I do now?
+Probably thing that I always wanted to do. Finally I will be able to create my own game, we will see if it will turn into something more for the first time. :wink:
 
 ## Installation
 *Project not ready for being used as gamedev tool*
